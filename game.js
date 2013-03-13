@@ -75,7 +75,17 @@ function findWord(letters) {
 	}
 }
 
-findWord(76);
+function supports_html5_storage() {
+  try {
+    return 'localStorage' in window && window['localStorage'] !== null;
+  } catch (e) {
+    return false;
+  }
+}
+
+console.log(supports_html5_storage());
+
+//findWord(76);
 
 /*var file = "dict.txt";
 var lines = new Array();
