@@ -36,13 +36,19 @@ $.get( "dict.txt", function( txt ) {
 		async: false,
 		success: function(data) {
 		
-		var twat = data.split("\n");
+		var twat = data.split(/\r\n|\r|\n/);; //Need to remove both carriage returns and new lines.
 		
 			for (var i = 0; i < twat.length; i++) {
 				//dict['word':twat[i]];
 				set_dict(i, {'word': twat[i],'score': 76});
 				//console.log(dict[i]);
 			}
+			
+			if ( window.localStorage !== null ) {
+				window.localStorage.clear();
+                //window.localStorage.gameDict = data;
+                console.log("Local storage saved!!");
+            }
 			//set_dict();
 		}
 	});
@@ -53,9 +59,6 @@ $.get( "dict.txt", function( txt ) {
 
 getDick();
 console.log(cheese.length);
-console.log(cheese[176435].word);
-
-
 
 
 // Takes in an array of letters and finds the longest
@@ -64,15 +67,16 @@ console.log(cheese[176435].word);
 function findWord(letters) {
 	// Clone the array for manipulation
 		
-		console.log("LENGTH: " + cheese.length);
-		for (var i = 0; i < cheese.length; i++) {
+		console.log("THE target: " + letters);
 		
-		if (cheese[i].score == letters) {
-			
-			console.log(cheese[i].word);
+		//console.log("LENGTH: " + cheese.length);
+		for (var i = 0; i < cheese.length; i++) {
+			//console.log(letters);
+			if (cheese[i].word == letters) {
+				console.log("THE WORD: " + cheese[i].word);
+			}
 			
 		}
-	}
 }
 
 function supports_html5_storage() {
@@ -85,7 +89,16 @@ function supports_html5_storage() {
 
 console.log(supports_html5_storage());
 
-//findWord(76);
+//console.log(cheese[0].word.charCodeAt(2)); //Had to check the end value (should be NaN not 13)
+
+console.log(cheese[2].word);
+
+if (cheese[0].word == "AA") {
+	
+	console.log(cheese[0].word);
+} 
+
+findWord("CENTRE");
 
 /*var file = "dict.txt";
 var lines = new Array();
