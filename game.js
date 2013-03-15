@@ -1,5 +1,6 @@
 var canvas = document.getElementById('main_canvas');
 var context = canvas.getContext('2d');
+
 // The dictionary lookup object
 var cheese = [];
 
@@ -8,53 +9,50 @@ function set_dict(x, y) {
 }
 
 function getDick() {
-/*// Do a jQuery Ajax request for the text dictionary
-$.get( "dict.txt", function( txt ) {
-    // Get an array of all the words
-    var twat = txt.split( "\n" );
-    //alert("hello");
+	
+if ( window.localStorage !== null && window.localStorage.gameDict ) {
 
-    // And add them as properties to the dictionary lookup
-    // This will allow for fast lookups later
-    for ( var i = 0; i < twat.length; i++ ) {
-        //dict['word':twat[i]];
-        dict[i] = {'word':twat[i], 'score':76}
-        //console.log(dict[i]);
-    }
+    processDictWords(window.localStorage.gameDict);
     
-    console.log(twat.length);
-    console.log(dict[0].word);
-    console.log(dict[0].score);
-   
-    // The game would start after the dictionary was loaded
-    // startGame();
-}, 'text'); */
-
+    console.log("LOADED FROM STORAGE");
+ 
+// Load in the dictionary from the server
+} else {
 	$.ajax({
-		url: "dict.txt",
+		url: "files/test.dat",
 		data: "text",
 		async: false,
 		success: function(data) {
 		
-		var twat = data.split(/\r\n|\r|\n/);; //Need to remove both carriage returns and new lines.
+		//var twat = data.split(/\r\n|\r|\n/); //Need to remove both carriage returns and new lines. (Req. for "dict.txt")
 		
-			for (var i = 0; i < twat.length; i++) {
-				//dict['word':twat[i]];
-				set_dict(i, {'word': twat[i],'score': 76});
-				//console.log(dict[i]);
-			}
+			processDictWords(data);
+			
+			console.log("LOADED FROM FILE");
 			
 			if ( window.localStorage !== null ) {
 				window.localStorage.clear();
-                //window.localStorage.gameDict = data;
+                window.localStorage.gameDict = data;
                 console.log("Local storage saved!!");
             }
-			//set_dict();
 		}
 	});
 	
+}
+	
 	
 }
+
+function processDictWords(words) {
+	
+	var twat = words.split("\n");
+		
+			for (var i = 0; i < twat.length; i++) {
+
+				set_dict(i, {'word': twat[i],'score': twat[i].length});
+			}
+}
+
 
 
 getDick();
@@ -91,54 +89,17 @@ console.log(supports_html5_storage());
 
 //console.log(cheese[0].word.charCodeAt(2)); //Had to check the end value (should be NaN not 13)
 
-console.log(cheese[2].word);
+console.log(cheese[2]);
 
-if (cheese[0].word == "AA") {
+//if (cheese[0].word == "AA") {
 	
-	console.log(cheese[0].word);
-} 
+	//console.log(cheese[0].word);
+//} 
 
-findWord("CENTRE");
+findWord("sluts");
 
-/*var file = "dict.txt";
-var lines = new Array();
+findWord("crisp");
 
-function getFile() {
+findWord("abode");
 
-    $.get(file,function(txt) {
-        twat = txt.split("\n");
-        for (var i = 0, len = twat.length; i < len; i++) {
-            console.log(twat[i]);
-        }
-    }); 
-}
-
-function test() {
-
- 	console.log(lines.length);
-    console.log(lines[1]);   
-}
-
-getFile(); 
-//test(); 
-
-*/
-/* jQuery.get('./dict.txt', function(data) {
-   alert(data);
-   //process text file line by line
-  // $('#div').html(data.replace('\n','<br>'));
-}); */
-/*var number = 0;
-
-$(document).ready(function() {
-        $.ajax({
-            url : "dict.txt",
-            dataType: "text",
-            success : function (data) {
-                //$(".text").html(data);
-                console.log(data);
-                ++number;
-                console.log(number);
-            }
-        });     
-}); */
+findWord("cat");

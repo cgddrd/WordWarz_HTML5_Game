@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<meta charset="UTF-8">
+<html>
+<head>
+    <title>Trie example</title>
+</head>
+
+<body>
+<textarea id=input cols=80 rows=10>
+apple
+orange
+alphapha
+lamp
+hello
+jello
+quiz
+</textarea>
+<br>
+<input onclick="loadDictionary()" type=button value="Load Dictionary">
+<br>
+<textarea id=output cols=80 rows=10>
+</textarea>
+<br>
+<input onclick="go()" type=button value="Encode">
+<div id="encodeStatus"></div>
+
+
+<br>
+<form action="javascript:lookup()">
+<input type=text id="lookup" value="succinct">
+<input type="submit" value="Lookup">
+<div id="status">
+</div>
+</form>
+<br>
+
+
+    <script type = 'text/javascript' src = 'trie.js'></script>
+</body>
+</html>
