@@ -46,6 +46,8 @@
 
 var BASE64 =
     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+    
+    var dict = [];
 
 
 /**
@@ -728,20 +730,41 @@ function go()
 
 }
 
+/** Test functions added to test that it could work with the game! */
+
+function getDict() {
+		$.ajax({
+			url: "trie/data.txt",
+			data: "text",
+			async: false,
+			success: function(data) {
+				//var twat = data.split(/\r\n|\r|\n/); //Need to remove both carriage returns and new lines. (Req. for "dict.txt")
+				dict = data;
+				console.log("LOADED FROM FILE");
+			}
+		});
+}
+
+
+
+
 /**
   Decode the data in the output textarea, and use it to check if a word exists
   in the dictionary.
+  
+  Replace "dict" with document.getElementById("lookup").value
   */
-function lookup()
+function lookup(word)
 {
+
+console.log(dict);
     var status = "";
     try 
     {
-        var json = eval( '(' + document.getElementById("output").value + ")" );
+        var json = eval( '(' + dict + ")" );
         var ftrie = new FrozenTrie( json.trie, json.directory, json.nodeCount
                 );
-        var word = document.getElementById("lookup").value;
-        if ( ftrie.lookup( document.getElementById("lookup").value ) ) {
+        if ( ftrie.lookup( word ) ) {
             status = '"' + word + "' is in the dictionary.";
         } else {
             status = '"' + word + "' IS NOT in the dictionary.";
