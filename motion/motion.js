@@ -13,6 +13,7 @@ var dx = 2;
 var dy = 4;
 
 var enemies = [];
+var playerBullets = [];
 
 
 setInterval(function() {
@@ -28,6 +29,7 @@ var player = {
   y: textY,
   width: 32,
   height: 32,
+  
   draw: function() {
     context.fillStyle = this.color;
     context.fillRect(this.x, this.y, this.width, this.height);
@@ -106,7 +108,7 @@ var err = dx - dy;
 
 while (true) {
 
-    console.log(x1 + " - " + y1);
+   // console.log(x1 + " - " + y1);
     I.storeCoords(x1, y1)
 
     if (x1 == x2 && y1 == y2) {
@@ -134,7 +136,9 @@ while (true) {
   
   	
     var katy_img=new Image();
-    katy_img.src="ship.gif";
+   // katy_img.src="ship.gif";
+   
+   katy_img.src="test.svg";
     
     var targetX = textX - I.x;
     var targetY = textY - I.y;
@@ -149,11 +153,24 @@ while (true) {
    
   // var targetAngle = (Math.atan2(textY - this.y, textX - this.x) * (180 / Math.PI))+90;
   
-  var targetAngle = (Math.atan2((textY + 16) - this.y, (textX + 16) - this.x));
+ // var targetAngle = (Math.atan2((textY + 16) - this.y, (textX + 16) - this.x));
+ 
+  var centrex = I.coords[Math.floor(I.coords.length / 2)].x;
+  var centrey = I.coords[Math.floor(I.coords.length / 2)].y;
+  var endx = I.coords[I.coords.length - 1].x;
+  var endy = I.coords[I.coords.length - 1].y;
+  
+  var dy = endy - centrey;
+  var dx = endx - centrex;
+ 
+ 
+  
+  var targetAngle = Math.atan2(dy, dx) - 0.3;
+  
    
    targetAngle = (targetAngle+360)%360;  
    
-    if(this.angle != targetAngle) {
+  /*  if(this.angle != targetAngle) {
     
     //REMOVE ALL NUMBERS TO MAKE THEM SPIN!!
         // Get the difference between the current angle and the target angle
@@ -165,7 +182,7 @@ while (true) {
         this.angle += sign*delta+360;            
         this.angle %= 360;
 
-    }
+    } */
    
    // context.drawImage(katy_img,this.x,this.y, this.width, this.height);
    
@@ -177,10 +194,10 @@ while (true) {
     //Rotate the canvas around the origin
    // context.rotate(rad);
    
-   context.rotate(this.angle);
+   context.rotate(targetAngle);
 
     //draw the image    
-    context.drawImage(katy_img,(this.width / 2 * (-1)) - this.width / 2,(this.height / 2 * (-1)) - this.height / 2,this.width,this.height);
+    context.drawImage(katy_img,(this.width / 2 * (-1)),(this.height / 2 * (-1)),this.width,this.height);
 
     //reset the canvas  
   //  context.rotate(rad * ( -1 ) );
@@ -191,7 +208,7 @@ while (true) {
       context.beginPath();
       context.moveTo(I.coords[0].x, I.coords[0].y);
       context.lineTo(I.coords[I.coords.length - 1].x, I.coords[I.coords.length - 1].y);
-      context.stroke();
+      context.stroke(); 
 
   };
 
@@ -278,6 +295,95 @@ if (I.coordsIndex < I.coords.length) {
   });
 }
 
+function Bullet(I) {
+  I.active = true;
+
+  I.xVelocity = 0;
+  I.yVelocity = -I.speed;
+  I.width = 3;
+  I.height = 3;
+  I.color = "#000";
+  
+  I.coords = [];
+  I.coordsIndex = 0;
+
+  I.inBounds = function() {
+    return I.x >= 0 && I.x <= CANVAS_WIDTH &&
+      I.y >= 0 && I.y <= CANVAS_HEIGHT;
+  };
+  
+   I.storeCoords = function (xVal, yVal) {
+  
+    I.coords.push({x: xVal, y: yVal});
+    
+  }
+ 
+    I.calc = function () {
+  
+ // console.log("helo");
+  
+  var x1 = I.x;
+  var x2 = I.target.x;
+  var y1 = I.y;
+  var y2 = I.target.y;
+  
+var dx = Math.abs(x2 - x1);
+var dy = Math.abs(y2 - y1);
+
+var sx = (x1 < x2) ? 1 : -1;
+var sy = (y1 < y2) ? 1 : -1;
+
+var err = dx - dy;
+
+while (true) {
+
+   // console.log(x1 + " - " + y1);
+    I.storeCoords(x1, y1)
+
+    if (x1 == x2 && y1 == y2) {
+        break;
+    }
+
+    var e2 = 2 * err;
+
+    if (e2 > -dy) {
+        err = err - dy;
+        x1 = x1 + sx;
+    }
+
+    if (e2 < dx) {
+        err = err + dx;
+        y1 = y1 + sy;
+    }
+}
+  }
+  
+  I.calc();
+
+  I.draw = function() {
+    context.fillStyle = this.color;
+    context.fillRect(this.x, this.y, this.width, this.height);
+  };
+
+  I.update = function() {
+  
+    if (I.coordsIndex < I.coords.length) {
+	
+	I.x = I.coords[I.coordsIndex].x;
+	I.y = I.coords[I.coordsIndex].y;
+	I.coordsIndex++;
+	
+} else {
+	
+	I.active = false;
+}
+
+    I.active = I.active && I.inBounds();
+  };
+
+  return I;
+}
+
 function update() { 
 
 
@@ -293,11 +399,43 @@ function update() {
  //   enemies.push(Enemy());
  // }
   
-   if(enemies.length < 1) {
+   handleCollisions();
+   
+   if(enemies.length < 10) {
     enemies.push(Enemy());
   }
   
-  handleCollisions();
+   playerBullets.forEach(function(bullet) {
+            bullet.update();
+          });
+          
+  playerBullets = playerBullets.filter(function(bullet) {
+    return bullet.active;
+  });
+  
+ 
+  
+   player.shoot = function() {
+   
+   		
+        
+          var bulletPosition = this.midpoint();
+        
+          playerBullets.push(Bullet({
+            speed: 5,
+            x: bulletPosition.x,
+            y: bulletPosition.y,
+            target: enemies[0]
+          }));
+        };
+        
+        player.midpoint = function() {
+          return {
+            x: this.x + this.width/2,
+            y: this.y + this.height/2
+          };
+        };
+        
   
 
   
@@ -314,7 +452,16 @@ function draw() {
     enemy.draw();
    
   });
+  
+  playerBullets.forEach(function(bullet) {
+            bullet.draw();
+          });
  
+ }
+ 
+ function fire() {
+	 
+	 player.shoot();
  }
  
  
