@@ -60,7 +60,9 @@ function Enemy(I) {
   var index = Math.floor(Math.random() * 2) + 1;
   
   I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
-  I.y = Math.floor(Math.random() * (CANVAS_HEIGHT - (textY + 20) + 1)) + (textY + 20);
+
+  I.y = CANVAS_HEIGHT;
+  //I.y = Math.floor(Math.random() * ((CANVAS_HEIGHT - (CANVAS_HEIGHT * 0.75)) + 1)) + CANVAS_HEIGHT * 0.75;
   
 
 //  I.x = CANVAS_WIDTH / 8 + Math.random() * CANVAS_WIDTH / 2;
@@ -259,7 +261,7 @@ if (I.coordsIndex < I.coords.length) {
 	
 	I.x = I.coords[I.coordsIndex].x;
 	I.y = I.coords[I.coordsIndex].y;
-	I.coordsIndex++;
+	I.coordsIndex = I.coordsIndex + 20;
 	
 } else {
 	
@@ -408,9 +410,9 @@ function update() {
   
    handleCollisions();
    
-   if(enemies.length < 10) {
+   if(enemies.length < 3 && Math.random() < 0.05) {
     enemies.push(Enemy());
-  }
+  }  
   
    playerBullets.forEach(function(bullet) {
             bullet.update();
