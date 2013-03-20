@@ -16,12 +16,17 @@ var enemies = [];
 var playerBullets = [];
 
 
-setInterval(function() {
+var timer = setInterval(function() {
 
   update();
   draw();
   
-}, 1000/FPS);
+}, 1000/FPS); 
+
+/*var timer = $.timer(function() {
+  update();
+  draw();
+}, 1000/FPS, true); */
 
 var player = {
   color: "#00A",
@@ -198,6 +203,8 @@ while (true) {
 
     //draw the image    
     context.drawImage(katy_img,(this.width / 2 * (-1)),(this.height / 2 * (-1)),this.width,this.height);
+    context.font = "bold 12px sans-serif";
+    context.fillText("Hello", (this.width / 2 * (-1)), (this.height / 2 * (-1)) + this.height + 10);
 
     //reset the canvas  
   //  context.rotate(rad * ( -1 ) );
@@ -205,10 +212,10 @@ while (true) {
     
     context.restore();   
     
-      context.beginPath();
+    /*  context.beginPath();
       context.moveTo(I.coords[0].x, I.coords[0].y);
       context.lineTo(I.coords[I.coords.length - 1].x, I.coords[I.coords.length - 1].y);
-      context.stroke(); 
+      context.stroke(); */
 
   };
 
@@ -463,5 +470,40 @@ function draw() {
 	 
 	 player.shoot();
  }
+ 
+ function pause() {
+ 
+// if (timer.isActive) {
+ 
+ 	//timer.pause();
+	 
+// } else {
+	 
+	// timer.play();
+// }
+
+if (timer != null) {
+	
+	clearInterval(timer);
+	timer = null;
+	
+} else {
+
+	console.log("hello");
+	
+	timer = setInterval(function() {
+
+		update();
+		draw();
+  
+	}, 1000/FPS);
+}
+	 
+	
+	
+	 
+	 
+ }
+ 
  
  
