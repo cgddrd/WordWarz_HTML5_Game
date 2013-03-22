@@ -19,11 +19,13 @@ var timer = setInterval(function() {
 }, 1000 / FPS);
 
 var player = {
+
 	color: "#00A",
-	x: (canvas.width / 2),
-	y: 50,
 	width: 32,
 	height: 32,
+	x: (CANVAS_WIDTH / 2) - 16,
+	y: (CANVAS_HEIGHT / 2) - 16 ,
+
 	draw: function() {
 		context.fillStyle = this.color;
 		context.fillRect(this.x, this.y, this.width, this.height);
@@ -103,8 +105,7 @@ function generatePath(sourceX, sourceY, targetX, targetY) {
 
 function calculateAngle(dy, dx) {
 
-	var targetAngle = Math.atan2(dy, dx) - 0.3;
-	targetAngle = (targetAngle + 360) % 360;
+	var targetAngle = Math.atan2(dy, dx);
 	return targetAngle;
 
 }
@@ -130,7 +131,12 @@ function generateNewEnemy() {
 
 	if (difference >= 1000) {
 
-		enemies.push(Enemy());
+		var newEnemy = new Enemy();
+
+		newEnemy.speed = 3;
+
+		enemies.push(newEnemy);
+
 		this.shiptime = current;
 
 	}
@@ -202,6 +208,12 @@ function pauseGame() {
 	}
 }
 
+function determineStart() {
+
+	return Math.floor(Math.random() * 2) + 1;
+
+}
+
 function Enemy(I) {
 
 	I = I || {};
@@ -210,18 +222,39 @@ function Enemy(I) {
 
 	I.angle = 0;
 
-	I.coords = [];
-	I.coordsIndex = 0;
-
-	I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
-	I.y = CANVAS_HEIGHT;
+	I.speed = 1;
 
 	I.width = 32;
 	I.height = 32;
 
+	I.coords = [];
+	I.coordsIndex = 0;
+
+	I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
+
+	if (determineStart() === 2) {
+		I.y = 0;
+	} else {
+		I.y = CANVAS_HEIGHT;
+	} 
+
 	I.inBounds = function() {
 		return I.x >= 0 && I.x <= CANVAS_WIDTH 
 		&& I.y >= 0 && I.y <= CANVAS_HEIGHT;
+	};
+
+	I.setAngle = function() {
+
+		var centrex = I.coords[Math.floor(I.coords.length / 2)].x;
+		var centrey = I.coords[Math.floor(I.coords.length / 2)].y;
+		var endx = I.coords[I.coords.length - 1].x;
+		var endy = I.coords[I.coords.length - 1].y;
+
+		var dy = endy - centrey;
+		var dx = endx - centrex;
+
+		this.angle = calculateAngle(dy, dx) + (90 * (Math.PI / 180));
+
 	};
 
 	I.draw = function() {
@@ -230,15 +263,6 @@ function Enemy(I) {
 
 		katy_img.src = "ship.svg";
 
-		var centrex = I.coords[Math.floor(I.coords.length / 2)].x;
-		var centrey = I.coords[Math.floor(I.coords.length / 2)].y;
-		var endx = I.coords[I.coords.length - 1].x;
-		var endy = I.coords[I.coords.length - 1].y;
-		var dy = endy - centrey;
-		var dx = endx - centrex;
-
-		this.angle = calculateAngle(dy, dx);
-		
 		context.save()
 
 		//Set the origin to the center of the image
@@ -249,10 +273,15 @@ function Enemy(I) {
 		//draw the image    
 		context.drawImage(katy_img, (this.width / 2 * (-1)), (this.height / 2 * (-1)), this.width, this.height);
 
-		context.font = "bold 12px sans-serif";
-		context.fillText("Hello", (this.width / 2 * (-1)), (this.height / 2 * (-1)) + this.height + 10);
-
 		context.restore();
+
+		context.font = "bold 12px sans-serif";
+		context.fillText("Hello", (this.x + 20), this.y);
+
+		// context.beginPath();
+  //     	context.moveTo(I.coords[0].x, I.coords[0].y);
+  //     	context.lineTo(I.coords[I.coords.length - 1].x, I.coords[I.coords.length - 1].y);
+  //     	context.stroke(); 
 
 	};
 
@@ -261,13 +290,14 @@ function Enemy(I) {
 		if (I.coordsIndex < I.coords.length) {
 			I.x = I.coords[I.coordsIndex].x;
 			I.y = I.coords[I.coordsIndex].y;
-			I.coordsIndex = I.coordsIndex + 3;
+			I.coordsIndex += I.speed;
 		}
 
 		I.active = I.active && I.inBounds();
 	};
 
-	I.coords = generatePath(I.x, I.y, player.x, player.y);
+	I.coords = generatePath(I.x, I.y, (player.x + (player.width / 2)), (player.y + (player.height / 2)));
+	I.setAngle();
 
 	return I;
 };
