@@ -1,6 +1,7 @@
 // The dictionary lookup object
 var dictionary = [];
 var current_words = [];
+var letters = [];
 
 function set_dict(x, y) {
 	dictionary[x] = y;
@@ -45,10 +46,14 @@ function processDictWords(words) {
 	
 	for (var i = 0; i < currentWord.length; i++) {
 	
-		set_dict(i, {
-			'word': currentWord[i],
-			'score': currentWord[i].length
-		});
+		if (currentWord[i].length > 0) {
+	
+			set_dict(i, {
+				'word': currentWord[i],
+				'score': currentWord[i].length
+				});
+		
+		}
 		
 	}
 }
@@ -132,27 +137,72 @@ function findBinaryWord(word) {
 function getRandomWords(noOfWords) {
 
 	var word_array = [noOfWords];
+	var charcode;
+	var selectedWord;
+	
+	try {
 
-	for (var i = 0; i < noOfWords; i++) {
+		for (var i = 0; i < noOfWords; i++) {
+	
+			selectedWord = getNewWord();
+			charcode = selectedWord.word.charCodeAt(0);
 
-		var selector = Math.floor(Math.random() * dictionary.length) + 1;
+			while (checkExistingLetter(charcode)) {
+
+				selectedWord = getNewWord();
+				
+				charcode = selectedWord.word.charCodeAt(0);
+				
+			}
+		
+			word_array[i] = selectedWord;
+			console.log(word_array[i].word);
 	
-		var selectedWord = dictionary[selector];
-	
-		word_array[i] = selectedWord;
-	
-    }
+		}
+    
+    } catch (e) {
+    
+    	console.log("error getting word");
+    
+    	return null;
+			
+	}
 
     return word_array;
 	
 }
 
-function getSingleWord() {
-
-	var selector = Math.floor(Math.random() * dictionary.length) + 1;
+function getNewWord() {
 	
-	return dictionary[selector].word;
+	var selector = Math.floor(Math.random() * (dictionary.length - 1));
+	
+	return dictionary[selector];
+	
+}
 
+
+function checkExistingLetter(lettercode) {
+	
+	for (var i = 0; i < letters.length; i++) {
+			
+			if (lettercode === letters[i]) {
+				
+				return true;
+				
+			}
+			
+	}
+	
+	letters.push(lettercode);
+	
+	return false;
+	
+	
+}
+
+function resetLetters() {
+	
+	this.letters = [];
 }
 
 

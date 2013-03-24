@@ -57,11 +57,13 @@ function drawGame() {
 	player.draw();
 
 	enemies.forEach(function(enemy) {
+	
 		if (enemy.active && !(enemy.used)) {
 		
 		enemy.draw();
 		
-	}	}); 
+		}	
+	}); 
 	
 
 	playerBullets.forEach(function(bullet) {
@@ -98,6 +100,7 @@ function generatePath(sourceX, sourceY, targetX, targetY) {
 				err = err - dy;
 				sourceX = sourceX + sx;
 			}
+			
 			if (e2 < dx) {
 				err = err + dx;
 				sourceY = sourceY + sy;
@@ -121,6 +124,17 @@ function collides(a, b) {
 
 function handleCollisions() {
 
+playerBullets.forEach(function(bullet) {
+    enemies.forEach(function(enemy) {
+      if (collides(bullet, enemy)) {
+        bullet.active = false;
+        enemy.used = true;
+        enemy.active = false;
+        
+      }
+    });
+  });
+
 	enemies.forEach(function(enemy) {
 		if (collides(enemy, player)) {
 			enemy.active = false;
@@ -137,8 +151,11 @@ function generateNewEnemies(array) {
 	
 		var newEnemy = new Enemy();
 
-		newEnemy.speed = 3;
+		newEnemy.speed = 2;
+		
 		newEnemy.name = array[i].word;
+		newEnemy.health = array[i].word.length;
+		
 		newEnemy.active = false;
 
 		enemies.push(newEnemy);
@@ -155,7 +172,7 @@ function updateEnemies() {
 	var current = d.getTime();
 	var difference = current - this.shiptime;
 	
-	if (difference >= 2000 && Math.random() < 0.1) {
+	if (difference >= 2000 && Math.random() < 0.05) {
 	
 	/*	if (currentEnemy < enemies.length) {
 		
@@ -228,13 +245,13 @@ function updateBullets() {
 
 function updatePlayer() {
 
-	player.shoot = function() {
+	player.shoot = function(enemyIndex) {
 		var bulletPosition = this.midpoint();
 		playerBullets.push(Bullet({
-			speed: 5,
+			speed: 2,
 			x: bulletPosition.x,
 			y: bulletPosition.y,
-			target: enemies[0]
+			target: enemies[enemyIndex]
 		}));
 	};
 
@@ -246,26 +263,10 @@ function updatePlayer() {
 	};
 }
 
-function fire() {
-	player.shoot();
+function fireBullet(enemyIndex) {
+	this.player.shoot(enemyIndex);
 }
 
-function pauseGame() {
-
-	if (timer != null) {
-
-		clearInterval(timer);
-		timer = null;
-
-	} else {
-
-		timer = setInterval(function() {
-			updateGame();
-			drawGame();
-		}, 1000 / FPS);
-
-	}
-}
 
 function determineStart() {
 
@@ -276,7 +277,7 @@ function determineStart() {
 function Enemy(I) {
 
 	I = I || {};
-
+	
 	I.active = false;
 	I.used = false;
 
@@ -338,6 +339,7 @@ function Enemy(I) {
 		context.restore();
 
 		context.font = "bold 12px sans-serif";
+		
 		context.fillText(I.name, (this.x + 20), this.y);
 
 		context.beginPath();
@@ -392,7 +394,7 @@ function Bullet(I) {
 
 			I.x = I.coords[I.coordsIndex].x;
 			I.y = I.coords[I.coordsIndex].y;
-			I.coordsIndex++;
+			I.coordsIndex+=I.speed;
 
 		} else {
 
