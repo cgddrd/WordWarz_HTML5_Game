@@ -6,6 +6,7 @@ var CANVAS_HEIGHT = canvas.height;
 
 var shiptime = 0;
 
+var currentEnemy = 0;
 
 var enemies = [];
 var playerBullets = [];
@@ -31,7 +32,9 @@ function getEnemies() {
 
 function updateGame() {
 
-	updateEnemies();
+	var gameover = false;
+
+	gameover = updateEnemies();
 
 	updateBullets();
 
@@ -43,6 +46,8 @@ function updateGame() {
 
 	//generateNewEnemy("twat");
 	
+	return gameover;
+	
 }
 
 
@@ -52,8 +57,12 @@ function drawGame() {
 	player.draw();
 
 	enemies.forEach(function(enemy) {
+		if (enemy.active && !(enemy.used)) {
+		
 		enemy.draw();
-	});
+		
+	}	}); 
+	
 
 	playerBullets.forEach(function(bullet) {
 		bullet.draw();
@@ -115,45 +124,94 @@ function handleCollisions() {
 	enemies.forEach(function(enemy) {
 		if (collides(enemy, player)) {
 			enemy.active = false;
+			enemy.used = true;
 		}
 	});
 
 }
 
-function generateNewEnemy(word) {
 
-	var d = new Date();
-	var current = d.getTime();
-	var difference = current - this.shiptime;
-
-	if (difference >= 1000 && Math.random() < 0.02) {
-
+function generateNewEnemies(array) {
+	
+	for (var i = 0; i < array.length; i++) {
+	
 		var newEnemy = new Enemy();
 
 		newEnemy.speed = 3;
-		newEnemy.name = word;
+		newEnemy.name = array[i].word;
+		newEnemy.active = false;
 
 		enemies.push(newEnemy);
-		this.shiptime = current;
-
-		return true;
-
+		
 	}
-
-	return false;
-
+	
 }
 
 function updateEnemies() {
 
+	//console.log("Array size : " + enemies.length);
+
+	var d = new Date();
+	var current = d.getTime();
+	var difference = current - this.shiptime;
+	
+	if (difference >= 2000 && Math.random() < 0.1) {
+	
+	/*	if (currentEnemy < enemies.length) {
+		
+			currentEnemy++;
+			
+			console.log(currentEnemy);
+			
+		
+		} */
+		
+		
+		
+		if (enemies.length > 0) {
+		
+	//	while (enemies[value] == null) {
+		
+	//	value = Math.floor(Math.random() * enemies.length) + 1;
+			
+	//	}
+		var value = Math.floor(Math.random() * enemies.length);
+		
+		if (!(enemies[value].active) && !(enemies[value].used)) {
+			
+			enemies[value].active = true;
+			
+			
+		}
+		
+		} else {
+			
+			return true;
+		}
+		
+		this.shiptime = current;
+		
+	}
+	
+	
 	enemies.forEach(function(enemy) {
+	
+	if (enemy.active && !(enemy.used)) {
+		
 		enemy.update();
-	});
+		
+	}
+		
+	}); 
+	
 
 	enemies = enemies.filter(function(enemy) {
-		return enemy.active;
+		return (enemy.used == false);
 	}); 
-
+	 
+	 
+   return false;    
+       
 }
 
 function updateBullets() {
@@ -219,7 +277,8 @@ function Enemy(I) {
 
 	I = I || {};
 
-	I.active = true;
+	I.active = false;
+	I.used = false;
 
 	I.angle = 0;
 
@@ -281,7 +340,7 @@ function Enemy(I) {
 		context.font = "bold 12px sans-serif";
 		context.fillText(I.name, (this.x + 20), this.y);
 
-		 context.beginPath();
+		context.beginPath();
       	context.moveTo(I.coords[0].x, I.coords[0].y);
       	context.lineTo(I.coords[I.coords.length - 1].x, I.coords[I.coords.length - 1].y);
       	context.stroke(); 
@@ -296,7 +355,7 @@ function Enemy(I) {
 			I.coordsIndex += I.speed;
 		}
 
-		I.active = I.active && I.inBounds();
+		//I.active = I.active && I.inBounds();
 	};
 
 	I.coords = generatePath(I.x, I.y, (player.x + (player.width / 2)), (player.y + (player.height / 2)));
