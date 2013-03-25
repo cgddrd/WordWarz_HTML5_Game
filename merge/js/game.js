@@ -3,16 +3,21 @@ var levelover = false;
 var currentenemy = null;
 var currentenemyindex = 0;
 var timer;
+var currentLevel = 1;
+var enemyspeed = 1;
+var enemySpawnTime = 1000;
+var enemySpawnDelay = 0.05;
+var wordLimit = 5;
 
-function init() {
+function initGame() {
 
-	startLevel(2);
+	startLevel();
 
 }
 
-function startLevel(wordLimit) {
-
-	var wordArray = getRandomWords(wordLimit);
+function obtainWords(wordLimit) {
+	
+	var wordArray = null;
 
 	while (wordArray === null) {
 	
@@ -20,9 +25,45 @@ function startLevel(wordLimit) {
 		
 	}
 	
-	generateNewEnemies(wordArray);
+	return wordArray;
 	
-	console.log(checkEnemyCount());
+}
+
+function startLevel() {
+
+
+	if (currentLevel === 1) {
+		
+		initLevel(enemySpawnTime, enemySpawnDelay);
+		generateNewEnemies(obtainWords(wordLimit), enemyspeed);
+		
+	} else {
+	
+		if (currentLevel % 5 == 0 && enemyspeed < 8) {
+			
+			enemyspeed++;
+		
+		}
+		
+		if (currentLevel % 2 == 0 && enemySpawnDelay < 0.5) {
+			
+			enemySpawnDelay+=0.01
+			
+		}
+		
+		if (currentLevel % 3 == 0 && enemySpawnTime > 200) {
+			
+			enemySpawnTime-=10;
+			
+		}
+		
+		wordLimit+=2;
+		
+		initLevel(enemySpawnTime, enemySpawnDelay);
+		generateNewEnemies(obtainWords(wordLimit), enemyspeed);
+		
+	}
+	
 	
 	timer = setInterval(function() {
 	
@@ -52,7 +93,9 @@ function checkLevels() {
 	
 	if (levelover) {
 	
-		console.log("level finished");
+		currentLevel++;
+	
+		console.log("Level finished - Starting level " + currentLevel);
 		
 		clearInterval(timer);
 		
@@ -60,7 +103,7 @@ function checkLevels() {
 		
 		resetLetters();
 		
-		startLevel(5);
+		startLevel();
 		
 	}
 	
@@ -127,6 +170,27 @@ function checkInput(keyCode) {
 	}	
 }
 
+function handleCollisions() {
+
+playerBullets.forEach(function(bullet) {
+    enemies.forEach(function(enemy) {
+      if (collides(bullet, enemy)) {
+        bullet.active = false;
+      }
+    });
+  });
+
+	enemies.forEach(function(enemy) {
+		if (collides(enemy, player)) {
+			enemy.active = false;
+			enemy.used = true;
+			currentenemy = null;
+			currentenemyindex = 0;
+		}
+	});
+
+}
+
 function pauseGame() {
 
 	if (timer != null) {
@@ -137,27 +201,27 @@ function pauseGame() {
 	} else {
 
 		timer = setInterval(function() {
-		
-		
+	
+		updateGame();
+	
 		if (!checkEnemyCount()) {
-			//if (updateGame()) {
-		
-				clearInterval(timer);
-				console.log("game over!!");
-				levelover = true;
-		
-			} else {
-	
-				drawGame();
-		
-			}
-	
-			checkLevels();
 			
-			handleCollisions();
+			clearInterval(timer);
+			console.log("game over!!");
+			levelover = true;
 			
+		} else {
+		
+			drawGame();
 			
-		}, 1000 / FPS);
+		}
+		
+		checkLevels();
+		
+		handleCollisions();
+		
+		
+	}, 1000 / FPS);	
 
 	}
 }
@@ -182,25 +246,4 @@ document.onkeydown = function(event) {
 	    
   }
     
-}
-
-function handleCollisions() {
-
-playerBullets.forEach(function(bullet) {
-    enemies.forEach(function(enemy) {
-      if (collides(bullet, enemy)) {
-        bullet.active = false;
-      }
-    });
-  });
-
-	enemies.forEach(function(enemy) {
-		if (collides(enemy, player)) {
-			enemy.active = false;
-			enemy.used = true;
-			currentenemy = null;
-			currentenemyindex = 0;
-		}
-	});
-
 }

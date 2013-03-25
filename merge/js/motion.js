@@ -11,6 +11,10 @@ var currentEnemy = 0;
 var enemies = [];
 var playerBullets = [];
 
+var enemySpawnTime = 1000;
+var enemySpawnDelay = 0.05;
+
+
 var player = {
 
 	color: "#00A",
@@ -25,10 +29,6 @@ var player = {
 	}
 };
 
-function getEnemies() {
-
-	return enemies;
-}
 
 function updateGame() {
 
@@ -39,6 +39,13 @@ function updateGame() {
 	updatePlayer();
 
 	return checkEnemyCount();
+	
+}
+
+function initLevel(time, delay) {
+	
+	this.enemySpawnTime = time;
+	this.enemySpawnDelay = delay;
 	
 }
 
@@ -114,13 +121,13 @@ function collides(a, b) {
 	&& a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
-function generateNewEnemies(array) {
+function generateNewEnemies(array, speed) {
 	
 	for (var i = 0; i < array.length; i++) {
 	
 		var newEnemy = new Enemy();
 
-		newEnemy.speed = 1;
+		newEnemy.speed = speed;
 		
 		newEnemy.name = array[i].word;
 		newEnemy.displayName = newEnemy.name;
@@ -150,7 +157,7 @@ function updateEnemies() {
 	var current = d.getTime();
 	var difference = current - this.shiptime;
 	
-	if (difference >= 1000 && Math.random() < 0.05) {
+	if (difference >= enemySpawnTime && Math.random() < enemySpawnDelay) {
 
 		if (checkEnemyCount()) {
 
