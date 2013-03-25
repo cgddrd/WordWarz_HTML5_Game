@@ -32,21 +32,13 @@ function getEnemies() {
 
 function updateGame() {
 
-	var gameover = false;
-
-	gameover = updateEnemies();
+	updateEnemies();
 
 	updateBullets();
 
 	updatePlayer();
 
-	handleCollisions();
-
-	//console.log(enemies);
-
-	//generateNewEnemy("twat");
-	
-	return gameover;
+	return checkEnemyCount();
 	
 }
 
@@ -122,29 +114,6 @@ function collides(a, b) {
 	&& a.y < b.y + b.height && a.y + a.height > b.y;
 }
 
-function handleCollisions() {
-
-playerBullets.forEach(function(bullet) {
-    enemies.forEach(function(enemy) {
-      if (collides(bullet, enemy)) {
-        bullet.active = false;
-       // enemy.used = true;
-        //enemy.active = false;
-        
-      }
-    });
-  });
-
-	enemies.forEach(function(enemy) {
-		if (collides(enemy, player)) {
-			enemy.active = false;
-			enemy.used = true;
-		}
-	});
-
-}
-
-
 function generateNewEnemies(array) {
 	
 	for (var i = 0; i < array.length; i++) {
@@ -165,46 +134,34 @@ function generateNewEnemies(array) {
 	
 }
 
-function updateEnemies() {
+function checkEnemyCount() {
+	
+	if (enemies.length > 0) {
+		
+		return true;
+	}
+	
+	return false;
+}
 
-	//console.log("Array size : " + enemies.length);
+function updateEnemies() {
 
 	var d = new Date();
 	var current = d.getTime();
 	var difference = current - this.shiptime;
 	
 	if (difference >= 1000 && Math.random() < 0.05) {
-	
-	/*	if (currentEnemy < enemies.length) {
-		
-			currentEnemy++;
+
+		if (checkEnemyCount()) {
+
+			var value = Math.floor(Math.random() * enemies.length);
 			
-			console.log(currentEnemy);
-			
+			if (!(enemies[value].active) && !(enemies[value].used)) {
+				
+				enemies[value].active = true;
+					
+			}
 		
-		} */
-		
-		
-		
-		if (enemies.length > 0) {
-		
-	//	while (enemies[value] == null) {
-		
-	//	value = Math.floor(Math.random() * enemies.length) + 1;
-			
-	//	}
-		var value = Math.floor(Math.random() * enemies.length);
-		
-		if (!(enemies[value].active) && !(enemies[value].used)) {
-			
-			enemies[value].active = true;
-			
-			
-		}
-		
-		} else {
-			
-			return true;
 		}
 		
 		this.shiptime = current;
@@ -224,11 +181,8 @@ function updateEnemies() {
 	
 
 	enemies = enemies.filter(function(enemy) {
-		return (enemy.used == false);
-	}); 
-	 
-	 
-   return false;    
+		return (enemy.used === false);
+	});   
        
 }
 
@@ -354,10 +308,12 @@ function Enemy(I) {
 		
 		context.fillText(I.displayName, (this.x + 20), this.y);
 
+		/*
 		context.beginPath();
       	context.moveTo(I.coords[0].x, I.coords[0].y);
       	context.lineTo(I.coords[I.coords.length - 1].x, I.coords[I.coords.length - 1].y);
       	context.stroke(); 
+      	*/
 
 	};
 
