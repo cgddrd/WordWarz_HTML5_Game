@@ -155,7 +155,7 @@ function generateNewEnemies(array) {
 		
 		newEnemy.name = array[i].word;
 		newEnemy.displayName = newEnemy.name;
-		newEnemy.health = (array[i].word.length) - 1;
+		newEnemy.health = (array[i].word.length);
 		
 		newEnemy.active = false;
 
@@ -173,7 +173,7 @@ function updateEnemies() {
 	var current = d.getTime();
 	var difference = current - this.shiptime;
 	
-	if (difference >= 2000 && Math.random() < 0.05) {
+	if (difference >= 1000 && Math.random() < 0.05) {
 	
 	/*	if (currentEnemy < enemies.length) {
 		
@@ -244,12 +244,21 @@ function updateBullets() {
 
 }
 
+function clearBullets() {
+	
+	playerBullets.forEach(function(bullet) {
+		bullet.active = false;
+	});
+	
+	
+}
+
 function updatePlayer() {
 
 	player.shoot = function(enemyIndex) {
 		var bulletPosition = this.midpoint();
 		playerBullets.push(Bullet({
-			speed: 2,
+			speed: 10,
 			x: bulletPosition.x,
 			y: bulletPosition.y,
 			target: enemies[enemyIndex]

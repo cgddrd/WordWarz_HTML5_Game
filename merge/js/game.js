@@ -93,15 +93,16 @@ function damageEnemy() {
 	fireBullet(enemies.indexOf(currentenemy));
 	//console.log("ENEMY DAMAGED. HEALTH: " + currentenemy.health);
 	
-	if (currentenemyindex >= (currentenemy.name.length - 1)) {
+	//if (currentenemyindex >= (currentenemy.name.length - 1)) {
 	
-	//if (currentenemy.health <= 0) {
+	if (currentenemy.health <= 0) {
 		
 		currentenemy.active = false;
 		currentenemy.used = true;
 		console.log("ENEMY DESTROYED: " + currentenemy.name);
 		currentenemy = null;
 		currentenemyindex = 0;
+		clearBullets();
 		
 	} else {
 		
