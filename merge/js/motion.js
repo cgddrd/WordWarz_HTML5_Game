@@ -128,8 +128,8 @@ playerBullets.forEach(function(bullet) {
     enemies.forEach(function(enemy) {
       if (collides(bullet, enemy)) {
         bullet.active = false;
-        enemy.used = true;
-        enemy.active = false;
+       // enemy.used = true;
+        //enemy.active = false;
         
       }
     });
@@ -151,10 +151,11 @@ function generateNewEnemies(array) {
 	
 		var newEnemy = new Enemy();
 
-		newEnemy.speed = 2;
+		newEnemy.speed = 1;
 		
 		newEnemy.name = array[i].word;
-		newEnemy.health = array[i].word.length;
+		newEnemy.displayName = newEnemy.name;
+		newEnemy.health = (array[i].word.length) - 1;
 		
 		newEnemy.active = false;
 
@@ -291,7 +292,9 @@ function Enemy(I) {
 	I.coords = [];
 	I.coordsIndex = 0;
 
-	I.name;
+	I.displayName;
+	
+	I.health;
 
 	I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
 
@@ -340,7 +343,7 @@ function Enemy(I) {
 
 		context.font = "bold 12px sans-serif";
 		
-		context.fillText(I.name, (this.x + 20), this.y);
+		context.fillText(I.displayName, (this.x + 20), this.y);
 
 		context.beginPath();
       	context.moveTo(I.coords[0].x, I.coords[0].y);

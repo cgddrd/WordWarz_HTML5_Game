@@ -2,6 +2,8 @@ var FPS = 30;
 var value = 0;
 var limit = 0;
 var levelover = false;
+var currentenemy = null;
+var currentenemyindex = 0;
 
 var timer;
 
@@ -9,7 +11,7 @@ function init() {
 
 //setLimit(10);
 
-startLevel(5);
+startLevel(2);
 
 }
 
@@ -53,6 +55,7 @@ timer = setInterval(function() {
 	
 	checkLevels();
 	
+	
 }, 1000 / FPS);
 
 
@@ -71,15 +74,56 @@ function checkLevels() {
 		
 		resetLetters();
 		
-		startLevel(20);
+		startLevel(5);
 		
 	}
+	
+}
+
+function setCurrentEnemy(enemy) {
+	
+	this.currentenemy = enemy;
+	
+}
+
+function damageEnemy() {
+	
+	
+	currentenemy.health--;
+	fireBullet(enemies.indexOf(currentenemy));
+	//console.log("ENEMY DAMAGED. HEALTH: " + currentenemy.health);
+	
+	if (currentenemyindex >= (currentenemy.name.length - 1)) {
+	
+	//if (currentenemy.health <= 0) {
+		
+		currentenemy.active = false;
+		currentenemy.used = true;
+		console.log("ENEMY DESTROYED: " + currentenemy.name);
+		currentenemy = null;
+		currentenemyindex = 0;
+		
+	} else {
+		
+			currentenemyindex++;
+				
+			var test = currentenemy.name.substring(currentenemyindex)
+			currentenemy.displayName = test;
+		
+	}
+	
 	
 }
 
 function checkInput(keyCode) {
 	
 	var array = getEnemies();
+	
+	var inputLetter = String.fromCharCode(keyCode);
+	
+	console.log("Input: " + inputLetter + " - " + keyCode);
+	
+	if (currentenemy === null) {
 	
 	enemies.forEach(function(enemy) {
 	
@@ -89,13 +133,56 @@ function checkInput(keyCode) {
 	
 		if (test.charCodeAt(0) === keyCode && enemy.active === true) {
 		
-			console.log("ENEMY FOUND: " + enemy.name);
+			console.log("NEW ENEMY FOUND: " + enemy.name);
 			
-			fireBullet(enemies.indexOf(enemy));
-		
-		}
+			console.log("ACTUAL: " + test.charCodeAt(0) + " - " + test[0]);
+			
+			setCurrentEnemy(enemy);
+			
+			damageEnemy();
+			
+			
+			
+			
+			
+
+
+			
+		} 
 	});
 	
+	} else {
+		
+		var thing = currentenemy.name.toUpperCase();
+		var value = thing.charCodeAt(currentenemyindex);
+		
+		console.log("ACTUAL: " + thing.charCodeAt(currentenemyindex) + " - " + String.fromCharCode(value));
+		
+		if (thing.charCodeAt(currentenemyindex) === keyCode) {
+		
+			console.log("CURRENT ENEMY DAMAGED AGAIN: ");
+		
+			damageEnemy();
+			
+
+
+
+			//currentenemy.name = test;
+				
+			
+			//console.log("NEW NAME: " + test);
+
+				
+			
+				
+				
+			
+			
+			
+		}
+		
+		
+	}	
 }
 
 function pauseGame() {
@@ -154,6 +241,6 @@ document.onkeydown = function(event) {
 	    console.log("goodbye");
     }
     
-    console.log("RAW INPUT: " + keyCode);
+    //console.log("RAW INPUT: " + keyCode);
     
   }
