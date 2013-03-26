@@ -3,59 +3,69 @@ var dictionary = [];
 var current_words = [];
 var letters = [];
 
-function set_dict(x, y) {
-	dictionary[x] = y;
-}
+function getDictFile(fileName, wordLimit) {
 
-function getDictFile() {
+//window.localStorage.clear();
 
-window.localStorage.clear();
-
-	if (supports_html5_storage() && window.localStorage.gameDict) {
+	if (supports_html5_storage() && JSON.parse(localStorage.getItem("dictionary"))) {
 	
-		processDictWords(window.localStorage.gameDict);
+		//processDictWords(window.localStorage.getItem("gameDict" + wordLimit), wordLimit);
+		this.dictionary = JSON.parse(localStorage.getItem("dictionary"));
+		//console.log(dictionary);
 		console.log("LOADED FROM STORAGE");
 		
 	} else {
 	
 		$.ajax({
-			url: "files/dict5.dat",
+			url: fileName,
 			data: "text",
 			async: false,
 			success: function(data) {
 			
 				//var oldData = data.split(/\r\n|\r|\n/); //Need to remove both carriage returns and new lines. (Req. for "dict.txt")
-				processDictWords(data);
+				processDictWords(data, wordLimit);
 				console.log("LOADED FROM FILE");
 				
-				if (window.localStorage !== null) {
+			//	if (window.localStorage !== null) {
 				
-					window.localStorage.gameDict = data;
-					console.log("Local storage saved!!");
+					//window.localStorage.gameDict = data;
+					//window.localStorage.setItem("gameDict" + wordLimit, data);
+				//	console.log("Local storage saved!!");
 					
-				}
+				//}
 			}
 		});
 		
 	}
 }
 
-function processDictWords(words) {
+function processDictWords(words, wordLength) {
 
 	var currentWord = words.split("\n");
+	var test = [];
 	
 	for (var i = 0; i < currentWord.length; i++) {
 	
 		if (currentWord[i].length > 0) {
-	
-			set_dict(i, {
+		
+		test.push({
 				'word': currentWord[i],
 				'score': currentWord[i].length
-				});
-		
+				});	
 		}
 		
 	}
+	
+	dictionary.push({
+		'letterCount': wordLength,
+		'wordCollection': test
+		});	
+		
+		if (window.localStorage !== null) {
+		
+		window.localStorage.setItem("dictionary",  JSON.stringify(dictionary));
+		
+		}
 }
 
 function findWord(letters) {
@@ -134,22 +144,37 @@ function findBinaryWord(word) {
     return false;
 }
 
-function getRandomWords(noOfWords) {
+function getRandomWords(noOfWords, thevalue) {
 
 	var word_array = [noOfWords];
 	var charcode;
 	var selectedWord;
+	var selector;
 	
 	try {
 
 		for (var i = 0; i < noOfWords; i++) {
+		
+		if (thevalue === levelEnum.EASY) {
+			
+			selector = Math.floor(Math.random() * (4 - 3 + 1)) + 3;
+			
+		} else if (thevalue === levelEnum.MEDIUM) {
+			
+			selector = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+			
+		} else {
+			
+			selector = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
+			
+		}
 	
-			selectedWord = getNewWord();
+			selectedWord = getNewWord(selector);
 			charcode = selectedWord.word.charCodeAt(0);
 
 			while (checkExistingLetter(charcode)) {
 
-				selectedWord = getNewWord();
+				selectedWord = getNewWord(selector);
 				
 				charcode = selectedWord.word.charCodeAt(0);
 				
@@ -172,11 +197,22 @@ function getRandomWords(noOfWords) {
 	
 }
 
-function getNewWord() {
+function getNewWord(dictionaryNo) {
+
+var thearray;
+
+for (var i = 0; i < dictionary.length; i++) {
 	
-	var selector = Math.floor(Math.random() * (dictionary.length - 1));
+	if (dictionaryNo === dictionary[i].letterCount) {
+		
+		thearray = dictionary[i].wordCollection;
+		
+	}
+}
 	
-	return dictionary[selector];
+	var selector = Math.floor(Math.random() * (thearray.length - 1));
+	
+	return thearray[selector];
 	
 }
 
@@ -205,9 +241,6 @@ function resetLetters() {
 	this.letters = [];
 }
 
-
-
-getDictFile();
 // console.log(dictionary.length);
 // console.log(supports_html5_storage());
 

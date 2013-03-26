@@ -6,26 +6,80 @@ var timer;
 var currentLevel = 1;
 var enemyspeed = 1;
 var enemySpawnTime = 1000;
-var enemySpawnDelay = 0.05;
+var enemySpawnDelay = 0.02;
 var wordLimit = 5;
 
+var levelEnum = {
+    EASY: 0,
+    MEDIUM: 1,
+    HARD: 2
+}
+
 function initGame() {
+
+	getDictFile("files/dict3.dat", 3);
+	getDictFile("files/dict4.dat", 4);
+	getDictFile("files/dict5.dat", 5);
+	getDictFile("files/dict6.dat", 6);
 
 	startLevel();
 
 }
 
-function obtainWords(wordLimit) {
+function obtainWords(wordLimit, thevalue) {
 	
 	var wordArray = null;
 
 	while (wordArray === null) {
 	
-		wordArray = getRandomWords(wordLimit);
+		wordArray = getRandomWords(wordLimit, thevalue);
 		
 	}
 	
 	return wordArray;
+	
+}
+
+function setLevelSpeed() {
+	
+	if (currentLevel % 5 == 0 && enemyspeed < 6) {
+			
+			enemyspeed++;
+			console.log("Enemy speed increased - " + enemyspeed);
+		
+		} 
+		
+		if (currentLevel % 6 == 0 && enemySpawnDelay < 0.04) {
+			
+			enemySpawnDelay+=0.005;
+			console.log("Spawn delay incremented - " + enemySpawnDelay);
+			
+		} 
+		
+		if (currentLevel % 2 == 0 && enemySpawnTime > 300) {
+			
+			enemySpawnTime-=50;
+			console.log("Spawn time decreased - " + enemySpawnTime);
+			
+		} 
+		
+		initLevel(enemySpawnTime, enemySpawnDelay);
+
+}
+
+function setLevelWordLength() {
+
+	if (currentLevel < 5) {
+			
+			generateNewEnemies(getRandomWords(wordLimit, levelEnum.MEDIUM), enemyspeed);
+			
+		} else {
+			
+			generateNewEnemies(getRandomWords(wordLimit, levelEnum.HARD), enemyspeed);
+			
+		}	
+	
+	
 	
 }
 
@@ -35,32 +89,32 @@ function startLevel() {
 	if (currentLevel === 1) {
 		
 		initLevel(enemySpawnTime, enemySpawnDelay);
-		generateNewEnemies(obtainWords(wordLimit), enemyspeed);
+		//generateNewEnemies(obtainWords(wordLimit, 3), enemyspeed);
+		generateNewEnemies(getRandomWords(wordLimit, levelEnum.EASY), enemyspeed);
+		
 		
 	} else {
 	
-		if (currentLevel % 5 == 0 && enemyspeed < 8) {
+				
+		if (currentLevel < 10) {
 			
-			enemyspeed++;
-		
-		}
-		
-		if (currentLevel % 2 == 0 && enemySpawnDelay < 0.5) {
+			wordLimit++;
 			
-			enemySpawnDelay+=0.01
 			
-		}
-		
-		if (currentLevel % 3 == 0 && enemySpawnTime > 200) {
+		} else {
 			
-			enemySpawnTime-=10;
+			wordLimit+=2;
 			
 		}
 		
-		wordLimit+=2;
+		setLevelSpeed();
 		
-		initLevel(enemySpawnTime, enemySpawnDelay);
-		generateNewEnemies(obtainWords(wordLimit), enemyspeed);
+		setLevelWordLength();
+		
+	
+		console.log("Spawn time - " + enemySpawnTime);
+		console.log("Spawn delay - " + enemySpawnDelay);
+		console.log("Enemy speed - " + enemyspeed);
 		
 	}
 	
