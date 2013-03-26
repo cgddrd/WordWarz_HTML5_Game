@@ -17,10 +17,7 @@ var levelEnum = {
 
 function initGame() {
 
-	getDictFile("files/dict3.dat", 3);
-	getDictFile("files/dict4.dat", 4);
-	getDictFile("files/dict5.dat", 5);
-	getDictFile("files/dict6.dat", 6);
+	initialiseDictionary();
 
 	startLevel();
 
@@ -42,14 +39,14 @@ function obtainWords(wordLimit, thevalue) {
 
 function setLevelSpeed() {
 	
-	if (currentLevel % 5 == 0 && enemyspeed < 6) {
+	if (currentLevel % 4 == 0 && enemyspeed < 6) {
 			
 			enemyspeed++;
 			console.log("Enemy speed increased - " + enemyspeed);
 		
 		} 
 		
-		if (currentLevel % 6 == 0 && enemySpawnDelay < 0.04) {
+		if (currentLevel % 5 == 0 && enemySpawnDelay < 0.04) {
 			
 			enemySpawnDelay+=0.005;
 			console.log("Spawn delay incremented - " + enemySpawnDelay);
@@ -78,13 +75,10 @@ function setLevelWordLength() {
 			generateNewEnemies(getRandomWords(wordLimit, levelEnum.HARD), enemyspeed);
 			
 		}	
-	
-	
-	
+		
 }
 
 function startLevel() {
-
 
 	if (currentLevel === 1) {
 		
@@ -132,6 +126,7 @@ function startLevel() {
 		} else {
 		
 			drawGame();
+			updateGameStats(currentLevel);
 			
 		}
 		
@@ -155,7 +150,7 @@ function checkLevels() {
 		
 		levelover = false;
 		
-		resetLetters();
+		resetUsedLetters();
 		
 		startLevel();
 		

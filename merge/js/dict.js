@@ -1,54 +1,52 @@
 // The dictionary lookup object
-var dictionary = [];
-var current_words = [];
+var gameDictionary = [];
 var letters = [];
 
-function getDictFile(fileName, wordLimit) {
+function initialiseDictionary() {
 
-//window.localStorage.clear();
-
-	if (supports_html5_storage() && JSON.parse(localStorage.getItem("dictionary"))) {
+if (checkLocalStorageSupport() && JSON.parse(localStorage.getItem("dictionary"))) {
 	
 		//processDictWords(window.localStorage.getItem("gameDict" + wordLimit), wordLimit);
-		this.dictionary = JSON.parse(localStorage.getItem("dictionary"));
+		this.gameDictionary = JSON.parse(localStorage.getItem("dictionary"));
 		//console.log(dictionary);
 		console.log("LOADED FROM STORAGE");
 		
 	} else {
 	
-		$.ajax({
-			url: fileName,
-			data: "text",
-			async: false,
-			success: function(data) {
-			
-				//var oldData = data.split(/\r\n|\r|\n/); //Need to remove both carriage returns and new lines. (Req. for "dict.txt")
-				processDictWords(data, wordLimit);
-				console.log("LOADED FROM FILE");
-				
-			//	if (window.localStorage !== null) {
-				
-					//window.localStorage.gameDict = data;
-					//window.localStorage.setItem("gameDict" + wordLimit, data);
-				//	console.log("Local storage saved!!");
-					
-				//}
-			}
-		});
-		
+		getDictFile("files/dict3.dat", 3);
+		getDictFile("files/dict4.dat", 4);
+		getDictFile("files/dict5.dat", 5);
+		getDictFile("files/dict6.dat", 6);
+	
 	}
+	
+	
+}
+
+function getDictFile(fileName, wordLimit) {
+
+	$.ajax({
+		url: fileName,
+		data: "text",
+		async: false,
+		success: function(data) {
+			
+			processDictWords(data, wordLimit);
+			console.log("LOADED FROM FILE");
+		}
+	});
 }
 
 function processDictWords(words, wordLength) {
 
 	var currentWord = words.split("\n");
-	var test = [];
+	var wordCollection = [];
 	
 	for (var i = 0; i < currentWord.length; i++) {
 	
 		if (currentWord[i].length > 0) {
 		
-		test.push({
+		wordCollection.push({
 				'word': currentWord[i],
 				'score': currentWord[i].length
 				});	
@@ -56,95 +54,31 @@ function processDictWords(words, wordLength) {
 		
 	}
 	
-	dictionary.push({
+	gameDictionary.push({
 		'letterCount': wordLength,
-		'wordCollection': test
+		'wordCollection': wordCollection
 		});	
 		
 		if (window.localStorage !== null) {
 		
-		window.localStorage.setItem("dictionary",  JSON.stringify(dictionary));
+		window.localStorage.setItem("dictionary",  JSON.stringify(gameDictionary));
 		
 		}
 }
 
-function findWord(letters) {
 
-	console.log("THE target: " + letters);
+function checkLocalStorageSupport() {
 
-	for (var i = 0; i < dictionary.length; i++) {
-	
-		if (dictionary[i].word == letters) {
-			console.log("THE WORD: " + dictionary[i].word);
-		}
-	}
-}
-
-function supports_html5_storage() {
 	try {
 		return 'localStorage' in window && window['localStorage'] !== null;
 	} catch (e) {
 		return false;
 	}
+	
 }
 
-function findBinaryWord(word) {
 
-  // Figure out which bin we're going to search
-    var l = word.length;
-   
-    // Don't search if there's nothing to look through
-   // if ( !dict[l] ) {
-     //   return false;
-  //  }
-   
-    // Get the number of words in the dictionary bin
-    
-    var words = dictionary.length,
-    
-        // The low point from where we're starting the binary search
-        low = 0,
-       
-        // The max high point
-        high = words - 1,
-       
-        // And the precise middle of the search
-        mid = Math.floor( words / 2 );
-   
-    // We continue to look until we reach a final word
-    while ( high >= low ) {
-    
-        // Grab the word at our current position
-        //var found = dict[l].substr( l * mid, l );
-        
-        var found = dictionary[mid].word;
-       
-        // If we've found the word, stop now
-        if ( word === found ) {
-       
-            return true;
-
-        }
-       
-        // Otherwise, compare
-        // If we're too high, move lower
-        if ( word < found ) {
-            high = mid - 1;
-       
-        // If we're too low, go higher
-        } else {
-            low = mid + 1;
-        }
-       
-        // And find the new search point
-        mid = Math.floor( (low + high) / 2 );
-    }
-   
-    // Nothing was found
-    return false;
-}
-
-function getRandomWords(noOfWords, thevalue) {
+function getRandomWords(noOfWords, levelDifficulty) {
 
 	var word_array = [noOfWords];
 	var charcode;
@@ -155,11 +89,11 @@ function getRandomWords(noOfWords, thevalue) {
 
 		for (var i = 0; i < noOfWords; i++) {
 		
-		if (thevalue === levelEnum.EASY) {
+		if (levelDifficulty === levelEnum.EASY) {
 			
 			selector = Math.floor(Math.random() * (4 - 3 + 1)) + 3;
 			
-		} else if (thevalue === levelEnum.MEDIUM) {
+		} else if (levelDifficulty === levelEnum.MEDIUM) {
 			
 			selector = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
 			
@@ -199,20 +133,20 @@ function getRandomWords(noOfWords, thevalue) {
 
 function getNewWord(dictionaryNo) {
 
-var thearray;
+var collection;
 
-for (var i = 0; i < dictionary.length; i++) {
+for (var i = 0; i < gameDictionary.length; i++) {
 	
-	if (dictionaryNo === dictionary[i].letterCount) {
+	if (dictionaryNo === gameDictionary[i].letterCount) {
 		
-		thearray = dictionary[i].wordCollection;
+		collection = gameDictionary[i].wordCollection;
 		
 	}
 }
 	
-	var selector = Math.floor(Math.random() * (thearray.length - 1));
+	var selector = Math.floor(Math.random() * (collection.length - 1));
 	
-	return thearray[selector];
+	return collection[selector];
 	
 }
 
@@ -236,35 +170,7 @@ function checkExistingLetter(lettercode) {
 	
 }
 
-function resetLetters() {
+function resetUsedLetters() {
 	
 	this.letters = [];
 }
-
-// console.log(dictionary.length);
-// console.log(supports_html5_storage());
-
-
-// var start = new Date().getMilliseconds();
-// findWord("sluts");
-// var end = new Date().getMilliseconds();
-// var time = end - start;
-// console.log('Execution time (iterative): ' + time);
-
-
-// var start = new Date().getMilliseconds();
-// console.log(findBinaryWord( "sluts" ));
-// var end = new Date().getMilliseconds();
-// var time = end - start;
-// console.log('Execution time (binary): ' + time);
-
-// console.log(getRandomWords(4));
-
-/* 
-
-Test functions used for the trie compression 
-
-getDict();
-lookup("cat");
-
-*/

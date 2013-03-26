@@ -12,7 +12,7 @@ var enemies = [];
 var playerBullets = [];
 
 var enemySpawnTime = 1000;
-var enemySpawnDelay = 0.05;
+var enemySpawnDelay = 0.025;
 
 var ship_img = loadImages();
 
@@ -32,7 +32,7 @@ var player = {
 
 function loadImages() {
 
-	ship_img  = new Image()
+	ship_img = new Image()
 	
 	if ($.browser.mozilla) {
 
@@ -65,6 +65,13 @@ function initLevel(time, delay) {
 	
 	this.enemySpawnTime = time;
 	this.enemySpawnDelay = delay;
+	
+}
+
+function updateGameStats(currentLevel) {
+	
+	context.font="20px Arial";
+	context.fillText("Level " + currentLevel, (canvas.width-80), 30);
 	
 }
 
@@ -236,7 +243,9 @@ function clearBullets() {
 function updatePlayer() {
 
 	player.shoot = function(enemyIndex) {
+	
 		var bulletPosition = this.midpoint();
+		
 		playerBullets.push(Bullet({
 			speed: 10,
 			x: bulletPosition.x,
@@ -320,19 +329,7 @@ function Enemy(I) {
 
 		context.rotate(this.angle);
 
-		//draw the image
-		
-		try {
-			
-		   
 		context.drawImage(ship_img, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
-		
-		
-		} catch (err) {
-		
-		console.log(err)
-			
-		}
 
 		context.restore();
 		
