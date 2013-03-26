@@ -14,6 +14,7 @@ var playerBullets = [];
 var enemySpawnTime = 1000;
 var enemySpawnDelay = 0.05;
 
+var ship_img = loadImages();
 
 var player = {
 
@@ -28,6 +29,24 @@ var player = {
 		context.fillRect(this.x, this.y, this.width, this.height);
 	}
 };
+
+function loadImages() {
+
+	ship_img  = new Image()
+	
+	if ($.browser.mozilla) {
+
+		ship_img.src = "images/ship.png";
+	
+	} else {
+	
+		ship_img.src = "images/ship.svg";
+	
+	}
+	
+	return ship_img;
+		
+}
 
 
 function updateGame() {
@@ -269,15 +288,14 @@ function Enemy(I) {
 	I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
 
 	if (determineStart() === 2) {
+	
 		I.y = 0;
+		
 	} else {
+	
 		I.y = CANVAS_HEIGHT;
+		
 	} 
-
-	I.inBounds = function() {
-		return I.x >= 0 && I.x <= CANVAS_WIDTH 
-		&& I.y >= 0 && I.y <= CANVAS_HEIGHT;
-	};
 
 	I.setAngle = function() {
 
@@ -295,22 +313,29 @@ function Enemy(I) {
 
 	I.draw = function() {
 		
-		var ship_img = new Image();
-
-		ship_img.src = "images/ship.svg";
-
-		context.save()
-
+		context.save();
+		
 		//Set the origin to the center of the image
 		context.translate(this.x, this.y);
 
 		context.rotate(this.angle);
 
-		//draw the image    
-		context.drawImage(ship_img, (this.width / 2 * (-1)), (this.height / 2 * (-1)), this.width, this.height);
+		//draw the image
+		
+		try {
+			
+		   
+		context.drawImage(ship_img, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
+		
+		
+		} catch (err) {
+		
+		console.log(err)
+			
+		}
 
 		context.restore();
-
+		
 		context.font = "bold 12px sans-serif";
 		
 		context.fillText(I.displayName, (this.x + 20), this.y);
@@ -332,7 +357,6 @@ function Enemy(I) {
 			I.coordsIndex += I.speed;
 		}
 
-		//I.active = I.active && I.inBounds();
 	};
 
 	I.coords = generatePath(I.x, I.y, (player.x + (player.width / 2)), (player.y + (player.height / 2)));
@@ -351,10 +375,6 @@ function Bullet(I) {
 	I.color = "#000";
 	I.coords = [];
 	I.coordsIndex = 0;
-
-	I.inBounds = function() {
-		return I.x >= 0 && I.x <= CANVAS_WIDTH && I.y >= 0 && I.y <= CANVAS_HEIGHT;
-	};
 
 	I.coords = generatePath(I.x, I.y, I.target.x, I.target.y);
 
@@ -377,7 +397,6 @@ function Bullet(I) {
 
 		}
 
-		I.active = I.active && I.inBounds();
 	};
 
 	return I;
