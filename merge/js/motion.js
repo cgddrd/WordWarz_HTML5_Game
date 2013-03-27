@@ -73,11 +73,12 @@ function initLevel(time, delay) {
 	
 }
 
-function updateGameStats(currentLevel, currentScore) {
+function updateGameStats(currentLevel, currentScore, currentLives) {
 	
 	context.font="20px Arial";
 	context.fillText("Level: " + currentLevel, (canvas.width-100), 30);
-	context.fillText("Score " + currentScore, (canvas.width-100), 60);
+	context.fillText("Score: " + currentScore, (canvas.width-100), 60);
+	context.fillText("Lives: " + currentLives, (canvas.width-100), 90);
 	
 }
 

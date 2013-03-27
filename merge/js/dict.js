@@ -61,7 +61,7 @@ function processDictWords(words, wordLength) {
 		
 		if (window.localStorage !== null) {
 		
-		window.localStorage.setItem("dictionary",  JSON.stringify(gameDictionary));
+			window.localStorage.setItem("dictionary",  JSON.stringify(gameDictionary));
 		
 		}
 }

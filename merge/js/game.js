@@ -22,6 +22,8 @@ function initGame() {
 	setDefaultAchievements()
 
 	setStartTime();
+	
+	loadAchievements();
 
 	startLevel();
 
@@ -109,7 +111,6 @@ function startLevel() {
 		
 		setLevelWordLength();
 		
-	
 		console.log("Spawn time - " + enemySpawnTime);
 		console.log("Spawn delay - " + enemySpawnDelay);
 		console.log("Enemy speed - " + enemyspeed);
@@ -130,7 +131,7 @@ function startLevel() {
 		} else {
 		
 			drawGame();
-			updateGameStats(currentLevel, getPlayer().score);
+			updateGameStats(currentLevel, getPlayer().score, getPlayer().lives);
 			
 		}
 		
@@ -271,6 +272,8 @@ function gameOver() {
 	
 	updateScoreTable("THE PLAYER", getPlayer().score);
 	
+	storeAchievements();
+	
 }
 
 function pauseGame() {
@@ -295,7 +298,7 @@ function pauseGame() {
 		} else {
 		
 			drawGame();
-			updateGameStats(currentLevel, getPlayer().score);
+			updateGameStats(currentLevel, getPlayer().score, getPlayer().lives);
 			
 		}
 		
