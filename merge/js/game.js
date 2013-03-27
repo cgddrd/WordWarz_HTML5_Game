@@ -20,7 +20,7 @@ function initGame() {
 	initialiseDictionary();
 
 	startLevel();
-
+	
 }
 
 function obtainWords(wordLimit, thevalue) {
@@ -126,7 +126,7 @@ function startLevel() {
 		} else {
 		
 			drawGame();
-			updateGameStats(currentLevel);
+			updateGameStats(currentLevel, getPlayer().score);
 			
 		}
 		
@@ -161,7 +161,7 @@ function checkLevels() {
 function addScore(scoreValue) {
 	
 	getPlayer().score+=scoreValue;
-	console.log("CURRENT SCORE: " + getPlayer().score);
+	//console.log("CURRENT SCORE: " + getPlayer().score);
 	
 }
 
@@ -263,6 +263,8 @@ function gameOver() {
 	console.log("GAME OVER!!");
 	
 	clearInterval(timer);
+	
+	updateScoreTable("THE PLAYER", getPlayer().score);
 	
 }
 
