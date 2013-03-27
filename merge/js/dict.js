@@ -6,9 +6,7 @@ function initialiseDictionary() {
 
 if (checkLocalStorageSupport() && JSON.parse(localStorage.getItem("dictionary"))) {
 	
-		//processDictWords(window.localStorage.getItem("gameDict" + wordLimit), wordLimit);
-		this.gameDictionary = JSON.parse(localStorage.getItem("dictionary"));
-		//console.log(dictionary);
+		gameDictionary = JSON.parse(localStorage.getItem("dictionary"));
 		console.log("LOADED FROM STORAGE");
 		
 	} else {
@@ -32,7 +30,6 @@ function getDictFile(fileName, wordLimit) {
 		success: function(data) {
 			
 			processDictWords(data, wordLimit);
-			console.log("LOADED FROM FILE");
 		}
 	});
 }
@@ -115,7 +112,6 @@ function getRandomWords(noOfWords, levelDifficulty) {
 			}
 		
 			word_array[i] = selectedWord;
-			console.log(word_array[i].word);
 	
 		}
     

@@ -17,6 +17,8 @@ var levelEnum = {
 
 function initGame() {
 
+	window.localStorage.clear();
+
 	initialiseDictionary();
 	
 	setDefaultAchievements()
@@ -43,30 +45,27 @@ function obtainWords(wordLimit, thevalue) {
 	
 }
 
-function setLevelSpeed() {
+function setLevelDifficulty() {
 	
-	if (currentLevel % 4 == 0 && enemyspeed < 6) {
+	if (currentLevel % 5 == 0 && enemyspeed < 5) {
 			
-			enemyspeed++;
-			console.log("Enemy speed increased - " + enemyspeed);
+		enemyspeed++;
 		
-		} 
+	} 
 		
-		if (currentLevel % 5 == 0 && enemySpawnDelay < 0.04) {
+	if (currentLevel % 4 == 0 && enemySpawnDelay < 0.04) {
 			
-			enemySpawnDelay+=0.005;
-			console.log("Spawn delay incremented - " + enemySpawnDelay);
+		enemySpawnDelay+=0.005;
 			
-		} 
+	} 
 		
-		if (currentLevel % 2 == 0 && enemySpawnTime > 300) {
+	if (currentLevel % 2 == 0 && enemySpawnTime > 300) {
 			
-			enemySpawnTime-=50;
-			console.log("Spawn time decreased - " + enemySpawnTime);
+		enemySpawnTime-=50;
 			
-		} 
+	} 
 		
-		initLevel(enemySpawnTime, enemySpawnDelay);
+	initLevel(enemySpawnTime, enemySpawnDelay);
 
 }
 
@@ -89,7 +88,7 @@ function startLevel() {
 	if (currentLevel === 1) {
 		
 		initLevel(enemySpawnTime, enemySpawnDelay);
-		//generateNewEnemies(obtainWords(wordLimit, 3), enemyspeed);
+
 		generateNewEnemies(getRandomWords(wordLimit, levelEnum.EASY), enemyspeed);
 		
 		
@@ -107,13 +106,9 @@ function startLevel() {
 			
 		}
 		
-		setLevelSpeed();
+		setLevelDifficulty();
 		
 		setLevelWordLength();
-		
-		console.log("Spawn time - " + enemySpawnTime);
-		console.log("Spawn delay - " + enemySpawnDelay);
-		console.log("Enemy speed - " + enemyspeed);
 		
 	}
 	
@@ -125,7 +120,6 @@ function startLevel() {
 		if (!checkEnemyCount()) {
 			
 			clearInterval(timer);
-			console.log("game over!!");
 			levelover = true;
 			
 		} else {
@@ -150,8 +144,6 @@ function checkLevels() {
 	if (levelover) {
 	
 		currentLevel++;
-	
-		console.log("Level finished - Starting level " + currentLevel);
 		
 		clearInterval(timer);
 		
@@ -165,7 +157,7 @@ function checkLevels() {
 	
 }
 
-function addScore(scoreValue) {
+function updatePlayerScore(scoreValue) {
 	
 	getPlayer().score+=scoreValue;
 	
@@ -185,7 +177,7 @@ function damageEnemy() {
 	
 	if (currentenemy.health <= 0) {
 		
-		addScore(currentenemy.score);
+		updatePlayerScore(currentenemy.score);
 		
 		currentenemy.active = false;
 		currentenemy.used = true;
@@ -203,7 +195,7 @@ function damageEnemy() {
 	}
 }
 
-function checkInput(keyCode) {
+function checkUserInput(keyCode) {
 	
 	var inputLetter = String.fromCharCode(keyCode);
 	
@@ -236,15 +228,16 @@ function checkInput(keyCode) {
 
 function handleCollisions() {
 
-playerBullets.forEach(function(bullet) {
-    enemies.forEach(function(enemy) {
-      if (collides(bullet, enemy)) {
-        bullet.active = false;
-      }
-    });
-  });
+	playerBullets.forEach(function(bullet) {
+	    enemies.forEach(function(enemy) {
+	      if (collides(bullet, enemy)) {
+	        bullet.active = false;
+	      }
+	    });
+	  });
 
 	enemies.forEach(function(enemy) {
+	
 		if (collides(enemy, player)) {
 			enemy.active = false;
 			enemy.used = true;
@@ -266,12 +259,8 @@ playerBullets.forEach(function(bullet) {
 
 function gameOver() {
 	
-	console.log("GAME OVER!!");
-	
 	clearInterval(timer);
-	
-	updateScoreTable("THE PLAYER", getPlayer().score);
-	
+
 	storeAchievements();
 	
 }
@@ -292,7 +281,6 @@ function pauseGame() {
 		if (!checkEnemyCount()) {
 			
 			clearInterval(timer);
-			console.log("game over!!");
 			levelover = true;
 			
 		} else {
@@ -330,7 +318,7 @@ document.onkeydown = function(event) {
   
   if (keyCode >= 65 && keyCode <= 122) {
     
-    checkInput(keyCode);
+    checkUserInput(keyCode);
 	    
   }
     
