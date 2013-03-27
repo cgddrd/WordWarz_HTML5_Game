@@ -1,5 +1,15 @@
 var highscores = [];
+var word_achievements = [];
+var score_achievements = [];
+var time_achievements = [];
 var MAX_SCORES = 10;
+var startTime;
+
+var achieveType = {
+    TIME: 0,
+    WORD: 1,
+    SCORE: 2
+}
 
 function updateScoreTable(name, score) {
 
@@ -62,5 +72,72 @@ function displayScores() {
 function setMaxScores(newMax) {
 	
 	this.MAX_SCORES = newMax;
+	
+}
+
+function setStartTime() {
+	
+	startTime = new Date();
+	console.log(startTime);
+	
+}
+
+function addAchievement(description, value, type) {
+
+	var newAchievement = {'des': description, 'criteria': value, 'obtained': false};	
+	
+	if (type === achieveType.WORD) {
+	
+		word_achievements.push(newAchievement);
+	
+	} else if (type === achieveType.TIME) {
+	
+		time_achievements.push(newAchievement);
+		
+	} else if (type === achieveType.SCORE) {
+	
+		score_achievements.push(newAchievement);
+	
+	}
+
+}
+
+function setDefaultAchievements() {
+	
+	addAchievement("Played for more than 10 secs", 10, achieveType.TIME); 
+}
+
+function checkAllAchievements() {
+	
+	checkTimeAchievements();
+	//checkScoreAcheivements();
+	//checkWordAcheievements();
+		
+}
+
+function checkTimeAchievements() {
+
+	var current = new Date();
+	
+	var difference = current - startTime;
+	
+	
+	var timeMinDiff = difference/1000;
+
+	//Length caching for optimised loops.
+	for (var i = 0, len = time_achievements.length; i < len; i++) {
+		
+		if (timeMinDiff >= time_achievements[i].criteria && !(time_achievements[i].obtained)) {
+		
+			time_achievements[i].obtained = true;
+			console.log("Acheivement Unlocked:" + time_achievements[i].des);
+			
+		}
+	}
+	
+		
+	
+	
+	
 	
 }

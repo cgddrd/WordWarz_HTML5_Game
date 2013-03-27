@@ -18,9 +18,13 @@ var levelEnum = {
 function initGame() {
 
 	initialiseDictionary();
+	
+	setDefaultAchievements()
+
+	setStartTime();
 
 	startLevel();
-	
+
 }
 
 function obtainWords(wordLimit, thevalue) {
@@ -134,6 +138,8 @@ function startLevel() {
 		
 		handleCollisions();
 		
+		checkAllAchievements();
+		
 		
 	}, 1000 / FPS);	
 }
@@ -161,7 +167,6 @@ function checkLevels() {
 function addScore(scoreValue) {
 	
 	getPlayer().score+=scoreValue;
-	//console.log("CURRENT SCORE: " + getPlayer().score);
 	
 }
 
@@ -290,12 +295,15 @@ function pauseGame() {
 		} else {
 		
 			drawGame();
+			updateGameStats(currentLevel, getPlayer().score);
 			
 		}
 		
 		checkLevels();
 		
 		handleCollisions();
+		
+		checkAllAchievements();
 		
 		
 	}, 1000 / FPS);	
