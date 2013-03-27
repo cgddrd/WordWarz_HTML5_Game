@@ -11,9 +11,6 @@ var currentEnemy = 0;
 var enemies = [];
 var playerBullets = [];
 
-var enemySpawnTime = 1000;
-var enemySpawnDelay = 0.025;
-
 var ship_img = loadImages();
 
 var player = {
@@ -21,6 +18,8 @@ var player = {
 	color: "#00A",
 	width: 32,
 	height: 32,
+	lives: 3,
+	score: 0, 
 	x: (CANVAS_WIDTH / 2) - 16,
 	y: (CANVAS_HEIGHT / 2) - 16 ,
 
@@ -29,6 +28,12 @@ var player = {
 		context.fillRect(this.x, this.y, this.width, this.height);
 	}
 };
+
+function getPlayer() {
+
+	return player;
+	
+}
 
 function loadImages() {
 
@@ -75,10 +80,17 @@ function updateGameStats(currentLevel) {
 	
 }
 
+function clearCanvas() {
+	
+	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	
+}
+
 
 function drawGame() {
 
-	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+	clearCanvas();
+	
 	player.draw();
 
 	enemies.forEach(function(enemy) {
@@ -156,6 +168,7 @@ function generateNewEnemies(array, speed) {
 		newEnemy.speed = speed;
 		
 		newEnemy.name = array[i].word;
+		newEnemy.score = array[i].score;
 		newEnemy.displayName = newEnemy.name;
 		newEnemy.health = (array[i].word.length);
 		

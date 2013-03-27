@@ -6,7 +6,7 @@ var timer;
 var currentLevel = 1;
 var enemyspeed = 1;
 var enemySpawnTime = 1000;
-var enemySpawnDelay = 0.02;
+var enemySpawnDelay = 0.025;
 var wordLimit = 5;
 
 var levelEnum = {
@@ -158,6 +158,13 @@ function checkLevels() {
 	
 }
 
+function addScore(scoreValue) {
+	
+	getPlayer().score+=scoreValue;
+	console.log("CURRENT SCORE: " + getPlayer().score);
+	
+}
+
 function setCurrentEnemy(enemy) {
 	
 	this.currentenemy = enemy;
@@ -171,6 +178,8 @@ function damageEnemy() {
 	currentenemy.health--;
 	
 	if (currentenemy.health <= 0) {
+		
+		addScore(currentenemy.score);
 		
 		currentenemy.active = false;
 		currentenemy.used = true;
@@ -235,9 +244,26 @@ playerBullets.forEach(function(bullet) {
 			enemy.used = true;
 			currentenemy = null;
 			currentenemyindex = 0;
+			
+			player.lives--;
+			
+			if (player.lives <= 0) {
+				
+				clearCanvas();
+				gameOver();
+				
+			}
 		}
 	});
 
+}
+
+function gameOver() {
+	
+	console.log("GAME OVER!!");
+	
+	clearInterval(timer);
+	
 }
 
 function pauseGame() {
