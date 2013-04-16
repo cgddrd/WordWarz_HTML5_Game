@@ -1,5 +1,6 @@
 var FPS = 30;
 var levelover = false;
+var gameover = false;
 var currentenemy = null;
 var currentenemyindex = 0;
 var timer;
@@ -17,7 +18,7 @@ var levelEnum = {
 
 function initGame() {
 
-	window.localStorage.clear();
+/* window.localStorage.clear(); */
 
 	initialiseDictionary();
 	
@@ -53,7 +54,7 @@ function setLevelDifficulty() {
 		
 	} 
 		
-	if (currentLevel % 4 == 0 && enemySpawnDelay < 0.04) {
+	if (currentLevel % 2 == 0 && enemySpawnDelay < 0.04) {
 			
 		enemySpawnDelay+=0.005;
 			
@@ -73,13 +74,17 @@ function setLevelWordLength() {
 
 	if (currentLevel < 5) {
 			
+			generateNewEnemies(getRandomWords(wordLimit, levelEnum.EASY), enemyspeed);
+			
+	} else if (currentLevel >=5 && currentLevel < 10) {
+			
 			generateNewEnemies(getRandomWords(wordLimit, levelEnum.MEDIUM), enemyspeed);
 			
-		} else {
-			
-			generateNewEnemies(getRandomWords(wordLimit, levelEnum.HARD), enemyspeed);
-			
-		}	
+	} else {
+		
+		generateNewEnemies(getRandomWords(wordLimit, levelEnum.HARD), enemyspeed);
+		
+	}
 		
 }
 
@@ -177,7 +182,16 @@ function damageEnemy() {
 	
 	if (currentenemy.health <= 0) {
 		
-		updatePlayerScore(currentenemy.score);
+		if (currentenemy.type === enemytype.HEALTH) {
+			
+			player.lives++;
+			
+		} else {
+			
+			updatePlayerScore(currentenemy.score);
+			
+		}
+		
 		
 		currentenemy.active = false;
 		currentenemy.used = true;
@@ -244,7 +258,12 @@ function handleCollisions() {
 			currentenemy = null;
 			currentenemyindex = 0;
 			
-			player.lives--;
+			if (enemy.type === enemytype.ENEMY) {
+				
+				player.lives--;
+				
+			}
+			
 			
 			if (player.lives <= 0) {
 				
@@ -263,6 +282,8 @@ function gameOver() {
 
 	storeAchievements();
 	
+	gameover = true;
+	
 }
 
 function pauseGame() {
@@ -272,7 +293,7 @@ function pauseGame() {
 		clearInterval(timer);
 		timer = null;
 
-	} else {
+	} else if(!gameover) {
 
 		timer = setInterval(function() {
 	

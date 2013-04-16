@@ -15,6 +15,15 @@ if (checkLocalStorageSupport() && JSON.parse(localStorage.getItem("dictionary"))
 		getDictFile("files/dict4.dat", 4);
 		getDictFile("files/dict5.dat", 5);
 		getDictFile("files/dict6.dat", 6);
+		getDictFile("files/dict7.dat", 7);
+		getDictFile("files/dict8.dat", 8);
+		getDictFile("files/dict9.dat", 9);
+		getDictFile("files/dict10.dat", 10);
+		getDictFile("files/dict11.dat", 11);
+		getDictFile("files/dict12.dat", 12);
+		getDictFile("files/dict13.dat", 13);
+		getDictFile("files/dict14.dat", 14);
+		getDictFile("files/dict15.dat", 15);
 	
 	}
 	
@@ -56,6 +65,8 @@ function processDictWords(words, wordLength) {
 		'wordCollection': wordCollection
 		});	
 		
+		console.log(gameDictionary);
+		
 		if (window.localStorage !== null) {
 		
 			window.localStorage.setItem("dictionary",  JSON.stringify(gameDictionary));
@@ -88,15 +99,15 @@ function getRandomWords(noOfWords, levelDifficulty) {
 		
 		if (levelDifficulty === levelEnum.EASY) {
 			
-			selector = Math.floor(Math.random() * (4 - 3 + 1)) + 3;
+			selector = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
 			
 		} else if (levelDifficulty === levelEnum.MEDIUM) {
 			
-			selector = Math.floor(Math.random() * (5 - 3 + 1)) + 3;
+			selector = Math.floor(Math.random() * (10 - 3 + 1)) + 3;
 			
 		} else {
 			
-			selector = Math.floor(Math.random() * (6 - 3 + 1)) + 3;
+			selector = Math.floor(Math.random() * (15 - 3 + 1)) + 3;
 			
 		}
 	
@@ -126,6 +137,7 @@ function getRandomWords(noOfWords, levelDifficulty) {
     return word_array;
 	
 }
+
 
 function getNewWord(dictionaryNo) {
 

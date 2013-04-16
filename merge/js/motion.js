@@ -11,7 +11,7 @@ var currentEnemy = 0;
 var enemies = [];
 var playerBullets = [];
 
-var ship_img = loadImages();
+//var ship_img = loadImages();
 
 var player = {
 
@@ -29,15 +29,22 @@ var player = {
 	}
 };
 
+var enemytype = {
+    	ENEMY: 0,
+    	HEALTH: 1
+    	};
+
 function getPlayer() {
 
 	return player;
 	
 }
 
-function loadImages() {
+function loadImages(newEnemyType) {
 
-	ship_img = new Image()
+	var ship_img = new Image();
+	
+	if (newEnemyType === enemytype.ENEMY) {
 	
 	if ($.browser.mozilla) {
 
@@ -47,6 +54,12 @@ function loadImages() {
 	
 		ship_img.src = "images/ship.svg";
 	
+	}
+	
+	} else {
+		
+		ship_img.src = "images/enemy.png";
+		
 	}
 	
 	return ship_img;
@@ -166,9 +179,20 @@ function generateNewEnemies(array, speed) {
 	for (var i = 0; i < array.length; i++) {
 	
 		var newEnemy = new Enemy();
-
-		newEnemy.speed = speed;
 		
+		if (Math.random() < 0.05) {
+			
+			console.log("NEW HEALTH GENERATED");
+			newEnemy.type = enemytype.HEALTH;
+			
+		} else {
+			
+			newEnemy.type = enemytype.ENEMY;
+			
+		}
+
+		newEnemy.image = loadImages(newEnemy.type);
+		newEnemy.speed = speed;
 		newEnemy.name = array[i].word;
 		newEnemy.score = array[i].score;
 		newEnemy.displayName = newEnemy.name;
@@ -294,6 +318,10 @@ function Enemy(I) {
 	
 	I.active = false;
 	I.used = false;
+	
+	I.type;
+	
+	I.image;
 
 	I.angle = 0;
 
@@ -344,7 +372,7 @@ function Enemy(I) {
 
 		context.rotate(this.angle);
 
-		context.drawImage(ship_img, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
+		context.drawImage(I.image, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
 
 		context.restore();
 		

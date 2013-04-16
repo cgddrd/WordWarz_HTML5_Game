@@ -139,7 +139,7 @@ function displayAchievements() {
 		
 		achieveList += '</ul>';
 		
-		$('#achieve').append(achieveList );
+		$('#achieve').append(achieveList);
 		
 	}
 	
