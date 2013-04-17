@@ -544,11 +544,13 @@ function HelpScreen(I) {
 	I.width = 500;
 	I.height = 500;
 	I.color = "rgba(0, 0, 0, 0.7)";
+	I.shipImage = loadImages(enemytype.ENEMY);
+	I.healthImage = loadImages(enemytype.HEALTH);
 	
 	I.button = {
 		
-		x: (I.x + 10),
-		y: (I.y + 60),
+		x: (I.width - 10),
+		y: (I.height - 30),
 		height: 20,
 		width: 30
 		
@@ -560,10 +562,36 @@ function HelpScreen(I) {
 		context.fillRect(this.x, this.y, this.width, this.height);
 		
 		context.fillStyle = '#fff';	
-		context.font = '18pt Calibri';
+		context.font = '18pt Arial';
 		context.fillText("In-Game Help Screen:", (I.x + 10), (I.y + 40));
-		
-		
+
+		context.font = '12pt Arial';
+		context.fillText("Welcome to WordWarz!", (I.x + 10), (I.y + 80));
+		context.fillText("Like robot wars, but with words. (and less Craig Charles)", (I.x + 10), (I.y + 100));
+
+		context.font = '14pt Arial';
+		context.fillText("Aim", (I.x + 10), (I.y + 140));
+
+		context.font = '11pt Arial';
+		context.fillText("Shoot down as many ships as you possibly can by correctly spelling the", (I.x + 20), (I.y + 160));
+		context.fillText("words that represent them.", (I.x + 20), (I.y + 175));
+
+		context.font = '14pt Arial';
+		context.fillText("How to Play", (I.x + 10), (I.y + 210));
+
+		context.font = '11pt Arial';
+		context.fillText("Simply type in words as they appear on the screen using your keyboard.", (I.x + 20), (I.y + 230));
+		context.fillText("You can only enter one word at a time, and the whole word must", (I.x + 20), (I.y + 260));
+		context.fillText("be spelt correctly before continuing. If you mis-spell a word,", (I.x + 20), (I.y + 275));
+		context.fillText("simply continue from the point at which you went wrong, there is no", (I.x + 20), (I.y + 290));
+		context.fillText("need to re-enter the entire word again.", (I.x + 20), (I.y + 305));
+
+		context.font = '14pt Arial';
+		context.fillText("Game Elements", (I.x + 10), (I.y + 340));
+		context.drawImage(I.shipImage, (I.x + 40), (I.y + 360),48, 48);
+
+		context.drawImage(I.healthImage, (I.x + 40), (I.y + 420),48, 48);
+
 		context.fillStyle = 'blue';	
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
 	};
