@@ -33,6 +33,10 @@ var enemytype = {
     	ENEMY: 0,
     	HEALTH: 1
     	};
+    	
+var pause = new PauseButton();
+var helpButton = new HelpButton();
+var help = new HelpScreen();
 
 function getPlayer() {
 
@@ -58,7 +62,7 @@ function loadImages(newEnemyType) {
 	
 	} else {
 		
-		ship_img.src = "images/enemy.png";
+		ship_img.src = "images/hospital-cross.png";
 		
 	}
 	
@@ -89,6 +93,7 @@ function initLevel(time, delay) {
 function updateGameStats(currentLevel, currentScore, currentLives) {
 	
 	context.font="20px Arial";
+	context.fillStyle = 'blue';
 	context.fillText("Level: " + currentLevel, (canvas.width-100), 30);
 	context.fillText("Score: " + currentScore, (canvas.width-100), 60);
 	context.fillText("Lives: " + currentLives, (canvas.width-100), 90);
@@ -121,6 +126,9 @@ function drawGame() {
 	playerBullets.forEach(function(bullet) {
 		bullet.draw();
 	});
+	
+	pause.draw(false);
+	helpButton.draw();
 
 }
 
@@ -180,9 +188,9 @@ function generateNewEnemies(array, speed) {
 	
 		var newEnemy = new Enemy();
 		
-		if (Math.random() < 0.05) {
+		if (Math.random() < 0.07) {
 			
-			console.log("NEW HEALTH GENERATED");
+			console.log("helath generated");
 			newEnemy.type = enemytype.HEALTH;
 			
 		} else {
@@ -286,7 +294,7 @@ function updatePlayer() {
 		var bulletPosition = this.midpoint();
 		
 		playerBullets.push(Bullet({
-			speed: 10,
+			speed: 8,
 			x: bulletPosition.x,
 			y: bulletPosition.y,
 			target: enemies[enemyIndex]
@@ -364,6 +372,8 @@ function Enemy(I) {
 	};
 
 	I.draw = function() {
+	
+	if (I.type === enemytype.ENEMY) {
 		
 		context.save();
 		
@@ -375,6 +385,15 @@ function Enemy(I) {
 		context.drawImage(I.image, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
 
 		context.restore();
+		
+	} else {
+		
+		context.save();
+		context.translate(this.x, this.y);
+		context.drawImage(I.image, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
+		context.restore();
+		
+	}
 		
 		context.font = "bold 12px sans-serif";
 		
@@ -406,6 +425,8 @@ function Enemy(I) {
 };
 
 function Bullet(I) {
+
+	I = I || {};
 
 	I.active = true;
 	I.xVelocity = 0;
@@ -440,4 +461,163 @@ function Bullet(I) {
 	};
 
 	return I;
+}
+
+function PauseButton(I) {
+
+	I = I || {};
+
+	I.x = 10;
+	I.y = 10;
+	I.width = 50;
+	I.height = 20;
+	I.color = "#000";
+	I.active;
+
+	I.draw = function(resumeFlag) {
+		context.font = '12pt Calibri';
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		context.fillStyle = '#fff';
+		
+		if (!resumeFlag) {
+			
+			context.fillText("Pause", (this.x + 5), (this.y + 15));
+			
+		} else {
+		
+			context.fillStyle = this.color;
+			context.fillRect(this.x, this.y, this.width + 10, this.height);
+			context.fillStyle = '#fff';
+			context.fillText("Resume", (this.x + 5), (this.y + 15));
+			
+		}
+		
+	};
+	
+	I.inBounds = function(inputX, inputY) {
+		
+		return (inputX > this.x && inputX < (this.x + this.width)) 
+			&& (inputY > this.y && inputY < (this.y + this.height));
+		
+	}
+
+	return I;
+}
+
+function HelpButton(I) {
+
+	I = I || {};
+
+	I.x = 80;
+	I.y = 10;
+	I.width = 50;
+	I.height = 20;
+	I.color = "#000";
+
+	I.draw = function() {
+		context.font = '12pt Calibri';
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		context.fillStyle = '#fff';
+		context.fillText("Help", (this.x + 5), (this.y + 15));
+		
+	};
+	
+	I.inBounds = function(inputX, inputY) {
+		
+		return (inputX > this.x && inputX < (this.x + this.width)) 
+			&& (inputY > this.y && inputY < (this.y + this.height));
+		
+	}
+
+	return I;
+}
+
+function HelpScreen(I) {
+
+	I = I || {};
+
+	I.active;
+	I.x = 150;
+	I.y = 50;
+	I.width = 500;
+	I.height = 500;
+	I.color = "rgba(0, 0, 0, 0.7)";
+	
+	I.button = {
+		
+		x: (I.x + 10),
+		y: (I.y + 60),
+		height: 20,
+		width: 30
+		
+	}
+
+	I.draw = function() {
+		
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		
+		context.fillStyle = '#fff';	
+		context.font = '18pt Calibri';
+		context.fillText("In-Game Help Screen:", (I.x + 10), (I.y + 40));
+		
+		
+		context.fillStyle = 'blue';	
+		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
+	};
+
+	I.buttonInBounds = function(inputX, inputY) {
+		
+		return (inputX > this.button.x && inputX < (this.button.x + this.button.width)) 
+			&& (inputY > this.button.y && inputY < (this.button.y + this.button.height));
+		
+	}
+
+	return I;
+}
+
+function createHelpScreen() {
+	
+	if (!help.active) {
+		
+		help.draw();
+		help.active = true;
+			
+	} else {
+		
+		help.active = false;
+	}
+	
+	pauseGame();
+	
+}
+
+function checkMouse(mouse_event) {
+	
+	var bounding_box = canvas.getBoundingClientRect();
+	
+	var mousex = (mouse_event.clientX-bounding_box.left) * (canvas.width/bounding_box.width);	
+        
+    var mousey = (mouse_event.clientY-bounding_box.top) * (canvas.height/bounding_box.height);	
+	
+	if (pause.inBounds(mousex, mousey) && !(help.active)) {
+		
+		
+		pauseGame();
+	
+	}
+	
+	if (helpButton.inBounds(mousex, mousey) && !(help.active) && !(pause.active)) {
+		
+		createHelpScreen();
+	
+	}
+	
+	if (help.buttonInBounds(mousex, mousey)) {
+		
+		createHelpScreen();
+		
+	}
 }

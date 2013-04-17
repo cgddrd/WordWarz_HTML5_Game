@@ -19,7 +19,8 @@ var levelEnum = {
 function initGame() {
 
 /* window.localStorage.clear(); */
-
+	canvas.addEventListener("click",checkMouse,false);
+	
 	initialiseDictionary();
 	
 	setDefaultAchievements()
@@ -120,7 +121,7 @@ function startLevel() {
 	
 	timer = setInterval(function() {
 	
-	updateGame();
+		updateGame();
 	
 		if (!checkEnemyCount()) {
 			
@@ -288,13 +289,26 @@ function gameOver() {
 
 function pauseGame() {
 
+	
+
 	if (timer != null) {
 
 		clearInterval(timer);
 		timer = null;
+		
+		pause.active = true;
+		
+		if (!help.active) {
+		
+			pause.draw(true);	
+			
+		}
+		
 
-	} else if(!gameover) {
-
+	} else if (!gameover) {
+	
+		pause.active = false;
+	
 		timer = setInterval(function() {
 	
 		updateGame();
