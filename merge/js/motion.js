@@ -99,11 +99,11 @@ function initLevel(time, delay) {
 
 function updateGameStats(currentLevel, currentScore, currentLives) {
 	
-	context.font="20px Arial";
-	context.fillStyle = 'blue';
-	context.fillText("Level: " + currentLevel, (canvas.width-100), 30);
-	context.fillText("Score: " + currentScore, (canvas.width-100), 60);
-	context.fillText("Lives: " + currentLives, (canvas.width-100), 90);
+	context.font="300 18px Oswald";
+	context.fillStyle = '#eee';
+	context.fillText("Level: " + currentLevel, (canvas.width-230), 27);
+	context.fillText("Score: " + currentScore, (canvas.width-150), 27);
+	context.fillText("Lives: " + currentLives, (canvas.width-70), 27);
 	
 }
 
@@ -118,7 +118,10 @@ function clearCanvas() {
 	// Fill with gradient
 	context.fillStyle=grd;
 	context.fillRect(0, 0, 800, 600);
-	
+
+	context.fillStyle = "#323232";
+	context.fillRect(0, 0, 800, 40);
+
 }
 
 
@@ -290,9 +293,10 @@ function updateEnemies() {
 		} else {
 
 			enemy.update();	
-			
+
 		}
 		
+		//console.log("ALIVE ENEMY: " + enemy.name + " - " + enemy.health + " - " + enemy.used + " - " + enemy.active);
 		
 	}
 		
@@ -333,16 +337,16 @@ function updatePlayer() {
 		var bulletPosition = this.midpoint();
 		
 		playerBullets.push(Bullet({
-			speed: 6,
+			speed: 20,
 			x: bulletPosition.x,
 			y: bulletPosition.y,
 			letterIndex: newLetterIndex,
 			target: enemies[enemyIndex]
 		}));
 		
-		if (!muted) {
-			laserSound.currentTime = 0;
-        	laserSound.play();
+		 if (!muted) {
+		 	laserSound.currentTime = 0;
+         	laserSound.play();
    	 	}
 	};
 
@@ -448,7 +452,7 @@ function Enemy(I) {
 		context.fillStyle = "rgba(0, 0, 0, 0.5)";
 		context.fillRect(this.x + 20, this.y, I.textWidth, 20);
 
-		context.font = "300 12pt Oswald";
+		context.font = "300 14pt Oswald";
 		context.fillStyle = I.textColor;
 		
 		context.fillText(I.displayName, (this.x + 20), this.y + 15);
@@ -527,9 +531,7 @@ function PauseButton(I) {
 	I.active;
 
 	I.draw = function(resumeFlag) {
-		context.font = '12pt Calibri';
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
+		context.font = '300 14pt Oswald';
 		context.fillStyle = '#fff';
 		
 		if (!resumeFlag) {
@@ -538,10 +540,10 @@ function PauseButton(I) {
 			
 		} else {
 		
-			context.fillStyle = this.color;
-			context.fillRect(this.x, this.y, this.width + 10, this.height);
+			context.fillStyle = "#323232";
+			context.fillRect(0, 0, 60, 40);
 			context.fillStyle = '#fff';
-			context.fillText("Resume", (this.x + 5), (this.y + 15));
+			context.fillText("Resume", (this.x + 5), (this.y + 16));
 			
 		}
 		
@@ -568,11 +570,9 @@ function HelpButton(I) {
 	I.color = "#000";
 
 	I.draw = function() {
-		context.font = '12pt Calibri';
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
+		context.font = '300 14pt Oswald';
 		context.fillStyle = '#fff';
-		context.fillText("Help", (this.x + 5), (this.y + 15));
+		context.fillText("Help", (this.x + 5), (this.y + 16));
 		
 	};
 	
@@ -597,11 +597,9 @@ function MuteButton(I) {
 	I.color = "#000";
 
 	I.draw = function() {
-		context.font = '12pt Calibri';
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
+		context.font = '300 14pt Oswald';
 		context.fillStyle = '#fff';
-		context.fillText("Mute", (this.x + 5), (this.y + 15));
+		context.fillText("Mute", (this.x + 5), (this.y + 16));
 		
 	};
 	

@@ -9,6 +9,7 @@ var enemyspeed = 1;
 var enemySpawnTime = 1000;
 var enemySpawnDelay = 0.025;
 var wordLimit = 5;
+var bulletcount = 0;
 
 var powerupSound = $("#powerupSound").get(0);
 var laserSound = $("#laserSound").get(0);
@@ -127,7 +128,7 @@ function obtainWords(wordLimit, thevalue) {
 
 function setLevelDifficulty() {
 	
-	if (currentLevel % 5 == 0 && enemyspeed < 3) {
+	if (currentLevel % 10 == 0 && enemyspeed < 3) {
 			
 		enemyspeed++;
 		
@@ -139,7 +140,7 @@ function setLevelDifficulty() {
 			
 	} 
 		
-	if (currentLevel % 2 == 0 && enemySpawnTime > 300) {
+	if (currentLevel % 2 == 0 && enemySpawnTime > 500) {
 			
 		enemySpawnTime-=50;
 			
@@ -255,16 +256,13 @@ function setCurrentEnemy(enemy) {
 	
 }
 
-function bulletDamage(currentIndex) {
+function checkHealth(theEnemy) {
 
+	theEnemy.health--;
 
-}
-
-function checkHealth() {
-
-	if (currentenemy.health <= 0) {
+	if (theEnemy.health <= 0) {
 		
-		if (currentenemy.type === enemytype.HEALTH) {
+		if (theEnemy.type === enemytype.HEALTH) {
 			
 			player.lives++;
 			
@@ -276,7 +274,7 @@ function checkHealth() {
 			
 		} else {
 			
-			updatePlayerScore(currentenemy.score);
+			updatePlayerScore(theEnemy.score);
 			
 			if (!muted) {
 				explosionSound.currentTime = 0;
@@ -285,13 +283,17 @@ function checkHealth() {
 			
 		}
 		
-		currentenemy.active = false;
-		currentenemy.used = true;
+		theEnemy.active = false;
+		theEnemy.used = true;
 		currentenemy = null;
 		currentenemyindex = 0;
 		
-		clearBullets();
-		
+		clearBullets();		
+	} else {
+
+		currentenemyindex++;
+		currentenemy.displayName = currentenemy.name.substring(currentenemyindex);
+
 	}
 
 }
@@ -300,12 +302,11 @@ function damageEnemy() {
 	
  if (currentenemy.health > 0) {
 		
-	currentenemyindex++;			
 	fireBullet(enemies.indexOf(currentenemy), currentenemyindex);
-	
-		//currentenemy.displayName = currentenemy.name.substring(currentenemyindex);
-		
-	}
+	checkHealth(currentenemy);
+
+ }
+
 }
 
 function checkUserInput(keyCode) {
@@ -346,12 +347,13 @@ function handleCollisions() {
 	playerBullets.forEach(function(bullet) {
 	    enemies.forEach(function(enemy) {
 	      if (collides(bullet, enemy)) {
-	        bullet.active = false;
-	        //damageEnemy();
-	        currentenemy.displayName = currentenemy.name.substring(bullet.letterIndex);
-	        currentenemy.health--;
-	        checkHealth();
+	  
 	        enemy.delay = 2;
+	        var coordsindex = enemy.coordsIndex - 5;
+	        enemy.coordsIndex = coordsindex;
+	        
+	        bullet.active = false;
+
 	      }
 	    });
 	  });
@@ -369,7 +371,6 @@ function handleCollisions() {
 				player.lives--;
 				
 			}
-			
 			
 			if (player.lives <= 0) {
 				
@@ -393,6 +394,8 @@ function gameOver() {
 }
 
 function pauseGame() {
+
+	toggleAllSounds();
 
 	if (timer != null) {
 
@@ -458,6 +461,11 @@ document.onkeydown = function(event) {
     
     checkUserInput(keyCode);
 	    
+  }
+
+  if (keyCode === 27) {
+
+  	pauseGame();
   }
     
 }
