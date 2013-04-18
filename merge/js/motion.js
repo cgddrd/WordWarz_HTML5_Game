@@ -11,32 +11,38 @@ var currentEnemy = 0;
 var enemies = [];
 var playerBullets = [];
 
-//var ship_img = loadImages();
+var player_img = new Image();
+player_img.src = "images/test.png";
 
 var player = {
 
 	color: "#00A",
-	width: 32,
-	height: 32,
+	width: 64,
+	height: 64,
 	lives: 3,
 	score: 0, 
-	x: (CANVAS_WIDTH / 2) - 16,
-	y: (CANVAS_HEIGHT / 2) - 16 ,
+	x: (CANVAS_WIDTH / 2) - 32,
+	y: (CANVAS_HEIGHT / 2) - 32,
 
 	draw: function() {
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
+
+		context.drawImage(player_img, this.x, this.y, this.width, this.height);
+		// context.fillStyle = this.color;
+		// context.fillRect(this.x, this.y, this.width, this.height);
+
+	
 	}
 };
 
 var enemytype = {
-    	ENEMY: 0,
-    	HEALTH: 1
-    	};
+   	ENEMY: 0,
+   	HEALTH: 1
+ };
     	
 var pause = new PauseButton();
 var helpButton = new HelpButton();
 var help = new HelpScreen();
+var muteButton = new MuteButton();
 var welcome = new WelcomeScreen();
 
 function getPlayer() {
@@ -104,6 +110,14 @@ function updateGameStats(currentLevel, currentScore, currentLives) {
 function clearCanvas() {
 	
 	context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+
+	var grd=context.createRadialGradient(400,300,600,40,60,100);
+	grd.addColorStop(0,"#091926");
+	grd.addColorStop(1,"#2A76B2");
+
+	// Fill with gradient
+	context.fillStyle=grd;
+	context.fillRect(0, 0, 800, 600);
 	
 }
 
@@ -118,7 +132,7 @@ function drawGame() {
 	
 		if (enemy.active && !(enemy.used)) {
 		
-		enemy.draw();
+			enemy.draw();
 		
 		}	
 	}); 
@@ -130,6 +144,7 @@ function drawGame() {
 	
 	pause.draw(false);
 	helpButton.draw();
+	muteButton.draw();
 
 }
 
@@ -178,9 +193,18 @@ function calculateAngle(dy, dx) {
 
 }
 
+// function collides(a, b) {
+// 	return a.x < b.x + b.width && a.x + a.width > b.x 
+// 	&& a.y < b.y + b.height && a.y + a.height > b.y;
+// }
+
 function collides(a, b) {
-	return a.x < b.x + b.width && a.x + a.width > b.x 
-	&& a.y < b.y + b.height && a.y + a.height > b.y;
+	  return !(
+        ((a.y + a.height) < (b.y)) ||
+        (a.y > (b.y + b.height)) ||
+        ((a.x + a.width) < b.x) ||
+        (a.x > (b.x + b.width))
+    );
 }
 
 function generateNewEnemies(array, speed) {
@@ -191,7 +215,6 @@ function generateNewEnemies(array, speed) {
 		
 		if (Math.random() < 0.07) {
 			
-			console.log("helath generated");
 			newEnemy.type = enemytype.HEALTH;
 			
 		} else {
@@ -205,6 +228,12 @@ function generateNewEnemies(array, speed) {
 		newEnemy.name = array[i].word;
 		newEnemy.score = array[i].score;
 		newEnemy.displayName = newEnemy.name;
+
+		//var metrics = context.measureText(newEnemy.displayName);
+      	//newEnemy.textWidth = metrics.width;
+
+      	newEnemy.textWidth = (newEnemy.displayName.length * 7);
+
 		newEnemy.health = (array[i].word.length);
 		
 		newEnemy.active = false;
@@ -254,7 +283,16 @@ function updateEnemies() {
 	
 	if (enemy.active && !(enemy.used)) {
 		
-		enemy.update();
+		if (enemy.delay > 0) {
+
+			enemy.delay--;
+
+		} else {
+
+			enemy.update();	
+			
+		}
+		
 		
 	}
 		
@@ -290,20 +328,22 @@ function clearBullets() {
 
 function updatePlayer() {
 
-	player.shoot = function(enemyIndex) {
-	
+	player.shoot = function(enemyIndex, newLetterIndex) {
+
 		var bulletPosition = this.midpoint();
 		
 		playerBullets.push(Bullet({
-			speed: 8,
+			speed: 6,
 			x: bulletPosition.x,
 			y: bulletPosition.y,
+			letterIndex: newLetterIndex,
 			target: enemies[enemyIndex]
 		}));
 		
-		
-		laserSound.currentTime = 0;
-        laserSound.play();
+		if (!muted) {
+			laserSound.currentTime = 0;
+        	laserSound.play();
+   	 	}
 	};
 
 	player.midpoint = function() {
@@ -314,8 +354,8 @@ function updatePlayer() {
 	};
 }
 
-function fireBullet(enemyIndex) {
-	this.player.shoot(enemyIndex);
+function fireBullet(enemyIndex, letterIndex) {
+	this.player.shoot(enemyIndex, letterIndex);
 }
 
 
@@ -349,6 +389,11 @@ function Enemy(I) {
 	I.displayName;
 	
 	I.health;
+
+	I.delay = 0;
+
+	I.textColor = '#eee';
+	I.textWidth;
 
 	I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
 
@@ -400,9 +445,13 @@ function Enemy(I) {
 		
 	}
 		
-		context.font = "bold 12px sans-serif";
+		context.fillStyle = "rgba(0, 0, 0, 0.5)";
+		context.fillRect(this.x + 20, this.y, I.textWidth, 20);
+
+		context.font = "300 12pt Oswald";
+		context.fillStyle = I.textColor;
 		
-		context.fillText(I.displayName, (this.x + 20), this.y);
+		context.fillText(I.displayName, (this.x + 20), this.y + 15);
 
 		/*
 		context.beginPath();
@@ -434,11 +483,9 @@ function Bullet(I) {
 	I = I || {};
 
 	I.active = true;
-	I.xVelocity = 0;
-	I.yVelocity = -I.speed;
 	I.width = 3;
 	I.height = 3;
-	I.color = "#000";
+	I.color = "#eee";
 	I.coords = [];
 	I.coordsIndex = 0;
 
@@ -539,6 +586,35 @@ function HelpButton(I) {
 	return I;
 }
 
+function MuteButton(I) {
+
+	I = I || {};
+
+	I.x = 150;
+	I.y = 10;
+	I.width = 50;
+	I.height = 20;
+	I.color = "#000";
+
+	I.draw = function() {
+		context.font = '12pt Calibri';
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		context.fillStyle = '#fff';
+		context.fillText("Mute", (this.x + 5), (this.y + 15));
+		
+	};
+	
+	I.inBounds = function(inputX, inputY) {
+		
+		return (inputX > this.x && inputX < (this.x + this.width)) 
+			&& (inputY > this.y && inputY < (this.y + this.height));
+		
+	}
+
+	return I;
+}
+
 function HelpScreen(I) {
 
 	I = I || {};
@@ -610,7 +686,7 @@ function HelpScreen(I) {
 		context.fillStyle = '#eee';	
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
 		
-		context.font = " bold 12pt Open Sans";
+		context.font = "bold 12pt Open Sans";
 		context.fillStyle = '#333';
 		context.fillText("Continue", (this.button.x + 25), (this.button.y + 25));
 	};
@@ -657,7 +733,7 @@ function WelcomeScreen(I) {
 		context.fillStyle = '#eee';	
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
 		
-		context.font = " bold 12pt Open Sans";
+		context.font = " bold 12pt Oswald";
 		context.fillStyle = '#333';
 		context.fillText("Continue", (this.button.x + 25), (this.button.y + 25));
 	};
@@ -698,7 +774,6 @@ function checkMouse(mouse_event) {
 	
 	if (pause.inBounds(mousex, mousey) && !(help.active)) {
 		
-		
 		pauseGame();
 	
 	}
@@ -708,6 +783,13 @@ function checkMouse(mouse_event) {
 		createHelpScreen();
 	
 	}
+
+	if (muteButton.inBounds(mousex, mousey) && !(help.active) && !(pause.active)) {
+		
+		toggleAllSounds();
+	
+	}
+	
 	
 	if (help.buttonInBounds(mousex, mousey)) {
 		

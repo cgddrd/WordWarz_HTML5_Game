@@ -19,6 +19,8 @@ explosionSound.volume = 0.2;
 laserSound.volume = 0.2;
 powerupSound.volume = 0.2;
 
+var muted = false;
+
 var levelEnum = {
     EASY: 0,
     MEDIUM: 1,
@@ -27,16 +29,11 @@ var levelEnum = {
 
    WebFontConfig = {
         google: {
-            families : ['Open Sans']
-        },
-
-        active: function() {
-            console.log('All fonts are now loaded');
+            families : ['Open Sans', 'Oswald']
         }
+    };
 
-    }
-    
-     var webFontsInit = function() {
+    var webFontsInit = function() {
             var wf = document.createElement('script');
             wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
         '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
@@ -44,35 +41,63 @@ var levelEnum = {
             wf.async = 'true';
             var s = document.getElementsByTagName('script')[0];
             s.parentNode.insertBefore(wf, s);
-          }();
+    }();
 
 function welcomeGame() {
 	
+	var grd=context.createLinearGradient(0,0,0,800);
+	grd.addColorStop(0,"#091926");
+	grd.addColorStop(1,"#3D5B73");
+
+	// Fill with gradient
+	context.fillStyle=grd;
+	context.fillRect(0, 0, 800, 600);
+
 	canvas.addEventListener("click",checkMouse,false);
 	welcome.active = true;
 	welcome.draw();	
 	
 }
 
+function toggleAllSounds() {
+
+	if (!muted) {
+
+		$.each($('audio'), function () {
+		    this.pause();
+		});
+
+		muted = true;
+
+	} else {
+
+		bgSound.play();
+		muted = false;
+
+	}
+
+
+}
 
 function initGame() {
 
-welcome.active = false;
+	welcome.active = false;
 
-bgSound.addEventListener('canplaythrough', function() { 
-   if (typeof bgSound.loop == 'boolean') {
-	    bgSound.loop = true;
-	} else {
-	    bgSound.addEventListener('ended', function() {
-	        this.currentTime = 0;
-	        this.play();
-	    }, false);
-	}
-}, false);
+	bgSound.addEventListener('canplaythrough', function() { 
+	   if (typeof bgSound.loop == 'boolean') {
+		    bgSound.loop = true;
+		} else {
+		    bgSound.addEventListener('ended', function() {
+		        this.currentTime = 0;
+		        this.play();
+		    }, false);
+		}
+	}, false);
 
 	
-
-	bgSound.play();
+	if (!muted) {
+		bgSound.play();
+	}
 
 	initialiseDictionary();
 	
@@ -102,13 +127,13 @@ function obtainWords(wordLimit, thevalue) {
 
 function setLevelDifficulty() {
 	
-	if (currentLevel % 5 == 0 && enemyspeed < 5) {
+	if (currentLevel % 5 == 0 && enemyspeed < 3) {
 			
 		enemyspeed++;
 		
 	} 
 		
-	if (currentLevel % 2 == 0 && enemySpawnDelay < 0.04) {
+	if (currentLevel % 3 == 0 && enemySpawnDelay < 0.04) {
 			
 		enemySpawnDelay+=0.005;
 			
@@ -153,17 +178,19 @@ function startLevel() {
 		
 	} else {
 	
-				
+	if (wordLimit < 26) {
+
 		if (currentLevel < 10) {
 			
 			wordLimit++;
-			
 			
 		} else {
 			
 			wordLimit+=2;
 			
 		}
+
+	}
 		
 		setLevelDifficulty();
 		
@@ -228,31 +255,35 @@ function setCurrentEnemy(enemy) {
 	
 }
 
-function damageEnemy() {
-	
-	fireBullet(enemies.indexOf(currentenemy));
-	
-	currentenemy.health--;
-	
+function bulletDamage(currentIndex) {
+
+
+}
+
+function checkHealth() {
+
 	if (currentenemy.health <= 0) {
 		
 		if (currentenemy.type === enemytype.HEALTH) {
 			
 			player.lives++;
-					
-			powerupSound.currentTime = 0;
-            powerupSound.play();
+			
+			if (!muted) {		
+				powerupSound.currentTime = 0;
+	            powerupSound.play();
+        	}
 
 			
 		} else {
 			
 			updatePlayerScore(currentenemy.score);
 			
-			explosionSound.currentTime = 0;
-            explosionSound.play();
+			if (!muted) {
+				explosionSound.currentTime = 0;
+	            explosionSound.play();
+        	}
 			
 		}
-		
 		
 		currentenemy.active = false;
 		currentenemy.used = true;
@@ -261,11 +292,18 @@ function damageEnemy() {
 		
 		clearBullets();
 		
-	} else {
+	}
+
+}
+
+function damageEnemy() {
+	
+ if (currentenemy.health > 0) {
 		
-		currentenemyindex++;
-			
-		currentenemy.displayName = currentenemy.name.substring(currentenemyindex);
+	currentenemyindex++;			
+	fireBullet(enemies.indexOf(currentenemy), currentenemyindex);
+	
+		//currentenemy.displayName = currentenemy.name.substring(currentenemyindex);
 		
 	}
 }
@@ -283,8 +321,10 @@ function checkUserInput(keyCode) {
 			if (enemyName.charCodeAt(0) === keyCode && enemy.active === true) {
 				
 				setCurrentEnemy(enemy);
-				
+				currentenemy.textColor = '#FE8E34';
+
 				damageEnemy();
+				
 			} 
 		});
 	
@@ -307,6 +347,11 @@ function handleCollisions() {
 	    enemies.forEach(function(enemy) {
 	      if (collides(bullet, enemy)) {
 	        bullet.active = false;
+	        //damageEnemy();
+	        currentenemy.displayName = currentenemy.name.substring(bullet.letterIndex);
+	        currentenemy.health--;
+	        checkHealth();
+	        enemy.delay = 2;
 	      }
 	    });
 	  });
@@ -348,8 +393,6 @@ function gameOver() {
 }
 
 function pauseGame() {
-
-	
 
 	if (timer != null) {
 
