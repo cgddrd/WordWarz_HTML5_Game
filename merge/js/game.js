@@ -10,17 +10,70 @@ var enemySpawnTime = 1000;
 var enemySpawnDelay = 0.025;
 var wordLimit = 5;
 
+var powerupSound = $("#powerupSound").get(0);
+var laserSound = $("#laserSound").get(0);
+var explosionSound = $("#explosionSound").get(0);
+var bgSound = $("#bgSound").get(0);
+
+explosionSound.volume = 0.2;
+laserSound.volume = 0.2;
+powerupSound.volume = 0.2;
+
 var levelEnum = {
     EASY: 0,
     MEDIUM: 1,
     HARD: 2
 }
 
+   WebFontConfig = {
+        google: {
+            families : ['Open Sans']
+        },
+
+        active: function() {
+            console.log('All fonts are now loaded');
+        }
+
+    }
+    
+     var webFontsInit = function() {
+            var wf = document.createElement('script');
+            wf.src = ('https:' == document.location.protocol ? 'https' : 'http') +
+        '://ajax.googleapis.com/ajax/libs/webfont/1/webfont.js';
+            wf.type = 'text/javascript';
+            wf.async = 'true';
+            var s = document.getElementsByTagName('script')[0];
+            s.parentNode.insertBefore(wf, s);
+          }();
+
+function welcomeGame() {
+	
+	canvas.addEventListener("click",checkMouse,false);
+	welcome.active = true;
+	welcome.draw();	
+	
+}
+
+
 function initGame() {
 
-/* window.localStorage.clear(); */
-	canvas.addEventListener("click",checkMouse,false);
+welcome.active = false;
+
+bgSound.addEventListener('canplaythrough', function() { 
+   if (typeof bgSound.loop == 'boolean') {
+	    bgSound.loop = true;
+	} else {
+	    bgSound.addEventListener('ended', function() {
+	        this.currentTime = 0;
+	        this.play();
+	    }, false);
+	}
+}, false);
+
 	
+
+	bgSound.play();
+
 	initialiseDictionary();
 	
 	setDefaultAchievements()
@@ -186,10 +239,17 @@ function damageEnemy() {
 		if (currentenemy.type === enemytype.HEALTH) {
 			
 			player.lives++;
+					
+			powerupSound.currentTime = 0;
+            powerupSound.play();
+
 			
 		} else {
 			
 			updatePlayerScore(currentenemy.score);
+			
+			explosionSound.currentTime = 0;
+            explosionSound.play();
 			
 		}
 		

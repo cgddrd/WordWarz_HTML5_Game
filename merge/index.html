@@ -3,18 +3,48 @@
 <html>
 <head>
     <title>Merge | IWP (clg11)</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="lib/jquery-1.9.1.min.js"></script>
     <script src="lib/jquery-migrate-1.1.1.min.js"></script>
 </head>
 
-<body onload="initGame()">
-    <canvas id="main_canvas" width="800" height="600">This text is displayed if your browser does not support HTML5 Canvas.</canvas>
+<body onload="welcomeGame()">
+
+<div id="canvas_container">
+    <canvas id="main_canvas" width="800" height="600">This text is displayed if your browser does not support HTML5 Canvas.</canvas> 
+</div>
+
     <div id="highscore"></div>
     <div id="achieve"></div>
+    
+    <audio id="powerupSound">
+        <source src="sounds/powerup.wav" type="audio/x-wav" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+     <audio id="laserSound">
+        <source src="sounds/laser.wav" type="audio/x-wav" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+    <audio id="explosionSound">
+        <source src="sounds/explosion.wav" type="audio/x-wav" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+    <audio id="bgSound">
+        <source src="sounds/bg.mp3" type="audio/mpeg" /> 
+        <source src="sounds/bg.ogg" type="audio/ogg" />
+        Your browser does not support the audio tag.
+    </audio>
+    
     <script type = 'text/javascript' src = 'js/highscore.js'></script>
     <script type = 'text/javascript' src = 'js/motion.js'></script>
     <script type = 'text/javascript' src = 'js/dict.js'></script>
     <script type = 'text/javascript' src = 'js/game.js'></script>
+    
+  
+    
 </body>
 </html>

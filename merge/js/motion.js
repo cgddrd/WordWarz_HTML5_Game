@@ -37,6 +37,7 @@ var enemytype = {
 var pause = new PauseButton();
 var helpButton = new HelpButton();
 var help = new HelpScreen();
+var welcome = new WelcomeScreen();
 
 function getPlayer() {
 
@@ -299,6 +300,10 @@ function updatePlayer() {
 			y: bulletPosition.y,
 			target: enemies[enemyIndex]
 		}));
+		
+		
+		laserSound.currentTime = 0;
+        laserSound.play();
 	};
 
 	player.midpoint = function() {
@@ -539,22 +544,22 @@ function HelpScreen(I) {
 	I = I || {};
 
 	I.active;
-	I.x = 150;
+	I.x = 100;
 	I.y = 50;
-	I.width = 500;
+	I.width = 550;
 	I.height = 500;
-	I.color = "rgba(0, 0, 0, 0.7)";
+	I.color = "rgba(0, 0, 0, 0.8)";
 	I.shipImage = loadImages(enemytype.ENEMY);
 	I.healthImage = loadImages(enemytype.HEALTH);
 	
 	I.button = {
 		
-		x: (I.width - 10),
-		y: (I.height - 30),
-		height: 20,
-		width: 30
+		x: (I.width - 60),
+		y: (I.height - 5),
+		height: 40,
+		width: 130
 		
-	}
+	};
 
 	I.draw = function() {
 		
@@ -563,37 +568,98 @@ function HelpScreen(I) {
 		
 		context.fillStyle = '#fff';	
 		context.font = '18pt Arial';
-		context.fillText("In-Game Help Screen:", (I.x + 10), (I.y + 40));
+		context.fillText("In-Game Help Screen:", (I.x + 20), (I.y + 40));
 
-		context.font = '12pt Arial';
-		context.fillText("Welcome to WordWarz!", (I.x + 10), (I.y + 80));
-		context.fillText("Like robot wars, but with words. (and less Craig Charles)", (I.x + 10), (I.y + 100));
-
-		context.font = '14pt Arial';
-		context.fillText("Aim", (I.x + 10), (I.y + 140));
-
-		context.font = '11pt Arial';
-		context.fillText("Shoot down as many ships as you possibly can by correctly spelling the", (I.x + 20), (I.y + 160));
-		context.fillText("words that represent them.", (I.x + 20), (I.y + 175));
+		context.font = '12pt "Trebuchet MS"';
+		context.fillText("Welcome to WordWarz!", (I.x + 20), (I.y + 80));
+		context.fillText("Like robot wars, but with words. (and less Craig Charles)", (I.x + 20), (I.y + 100));
 
 		context.font = '14pt Arial';
-		context.fillText("How to Play", (I.x + 10), (I.y + 210));
+		context.fillText("Aim", (I.x + 20), (I.y + 140));
 
-		context.font = '11pt Arial';
-		context.fillText("Simply type in words as they appear on the screen using your keyboard.", (I.x + 20), (I.y + 230));
-		context.fillText("You can only enter one word at a time, and the whole word must", (I.x + 20), (I.y + 260));
-		context.fillText("be spelt correctly before continuing. If you mis-spell a word,", (I.x + 20), (I.y + 275));
-		context.fillText("simply continue from the point at which you went wrong, there is no", (I.x + 20), (I.y + 290));
-		context.fillText("need to re-enter the entire word again.", (I.x + 20), (I.y + 305));
+		context.font = '11pt "Trebuchet MS"';
+		context.fillText("Shoot down as many ships as you possibly can by correctly spelling the", (I.x + 30), (I.y + 160));
+		context.fillText("words that represent them.", (I.x + 30), (I.y + 175));
 
 		context.font = '14pt Arial';
-		context.fillText("Game Elements", (I.x + 10), (I.y + 340));
-		context.drawImage(I.shipImage, (I.x + 40), (I.y + 360),48, 48);
+		context.fillText("How to Play", (I.x + 20), (I.y + 210));
 
-		context.drawImage(I.healthImage, (I.x + 40), (I.y + 420),48, 48);
+		context.font = '11pt "Trebuchet MS"';
+		context.fillText("Simply type in words as they appear on the screen using your keyboard.", (I.x + 30), (I.y + 230));
+		context.fillText("You can only enter one word at a time, and the whole word must", (I.x + 30), (I.y + 260));
+		context.fillText("be spelt correctly before continuing. If you mis-spell a word,", (I.x + 30), (I.y + 275));
+		context.fillText("simply continue from the point at which you went wrong, there is no", (I.x + 30), (I.y + 290));
+		context.fillText("need to re-enter the entire word again.", (I.x + 30), (I.y + 305));
 
-		context.fillStyle = 'blue';	
+		context.font = '14pt Arial';
+		context.fillText("Game Elements", (I.x + 20), (I.y + 340));
+		context.drawImage(I.shipImage, (I.x + 60), (I.y + 360),48, 48);
+		
+		context.font = '11pt "Trebuchet MS"';
+		context.fillText("These are the enemy ships.", (I.x + 120), (I.y + 380));
+		context.fillText("DESTROY = Your score + (Points x word length)", (I.x + 120), (I.y + 395));
+		context.fillText("COLLISION = 1 life lost", (I.x + 120), (I.y + 410));
+
+		context.drawImage(I.healthImage, (I.x + 60), (I.y + 430),48, 48);
+		
+		context.font = '11pt "Trebuchet MS"';
+		context.fillText("These are health vessels.", (I.x + 120), (I.y + 450));
+		context.fillText("DESTROY = +1 life", (I.x + 120), (I.y + 465));
+		context.fillText("COLLISION = Nothing", (I.x + 120), (I.y + 480));
+
+		context.fillStyle = '#eee';	
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
+		
+		context.font = " bold 12pt Open Sans";
+		context.fillStyle = '#333';
+		context.fillText("Continue", (this.button.x + 25), (this.button.y + 25));
+	};
+
+	I.buttonInBounds = function(inputX, inputY) {
+		
+		return (inputX > this.button.x && inputX < (this.button.x + this.button.width)) 
+			&& (inputY > this.button.y && inputY < (this.button.y + this.button.height));
+		
+	}
+
+	return I;
+}
+
+function WelcomeScreen(I) {
+
+	I = I || {};
+
+	I.active;
+	I.x = 100;
+	I.y = 50;
+	I.width = 300;
+	I.height = 200;
+	I.color = "rgba(0, 0, 0, 0.8)";
+	
+	I.button = {
+		
+		x: (I.width - 60),
+		y: (I.height - 5),
+		height: 40,
+		width: 130
+		
+	};
+
+	I.draw = function() {
+		
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		
+		context.fillStyle = '#fff';	
+		context.font = '18pt Arial';
+		context.fillText("In-Game Help Screen:", (I.x + 20), (I.y + 40));
+
+		context.fillStyle = '#eee';	
+		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
+		
+		context.font = " bold 12pt Open Sans";
+		context.fillStyle = '#333';
+		context.fillText("Continue", (this.button.x + 25), (this.button.y + 25));
 	};
 
 	I.buttonInBounds = function(inputX, inputY) {
@@ -646,6 +712,12 @@ function checkMouse(mouse_event) {
 	if (help.buttonInBounds(mousex, mousey)) {
 		
 		createHelpScreen();
+		
+	}
+	
+	if (welcome.buttonInBounds(mousex, mousey) && welcome.active) {
+		
+		initGame();
 		
 	}
 }

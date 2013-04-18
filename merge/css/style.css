@@ -1,3 +1,12 @@
+#canvas_container {
+	
+	width:800px;
+	height:600px;
+	margin: 0 auto; 
+}
+
 #main_canvas {
 	border:solid 1px #000;
 }
+
+font-family: 'Open Sans', sans-serif;
