@@ -46,6 +46,11 @@ var levelEnum = {
 
 function welcomeGame() {
 	
+	if (gameover === true) {
+		resetGame();
+		gameOverScreen.active = false;
+	}
+
 	var grd=context.createLinearGradient(0,0,0,800);
 	grd.addColorStop(0,"#091926");
 	grd.addColorStop(1,"#3D5B73");
@@ -58,6 +63,25 @@ function welcomeGame() {
 	welcome.active = true;
 	welcome.draw();	
 	
+}
+
+function resetGame() {
+
+	player.score = 0;
+	player.lives = 3;
+	enemies = [];
+	levelover = false;
+	gameover = false;
+	currentenemy = null;
+	playerBullets = [];
+	currentEnemy = 0;
+	currentenemyindex = 0;
+	currentLevel = 1;
+	enemyspeed = 1;
+	enemySpawnTime = 1000;
+	enemySpawnDelay = 0.025;
+	wordLimit = 5;
+
 }
 
 function toggleAllSounds() {
@@ -95,10 +119,9 @@ function initGame() {
 		}
 	}, false);
 
-	
-	if (!muted) {
-		bgSound.play();
-	}
+	bgSound.currentTime = 0;
+	bgSound.play();
+	muted = false;
 
 	initialiseDictionary();
 	
@@ -128,7 +151,7 @@ function obtainWords(wordLimit, thevalue) {
 
 function setLevelDifficulty() {
 	
-	if (currentLevel % 10 == 0 && enemyspeed < 3) {
+	if (currentLevel % 5 == 0 && enemyspeed < 3) {
 			
 		enemyspeed++;
 		
@@ -140,7 +163,7 @@ function setLevelDifficulty() {
 			
 	} 
 		
-	if (currentLevel % 2 == 0 && enemySpawnTime > 500) {
+	if (currentLevel % 2 == 0 && enemySpawnTime > 400) {
 			
 		enemySpawnTime-=50;
 			
@@ -305,6 +328,13 @@ function damageEnemy() {
 	fireBullet(enemies.indexOf(currentenemy), currentenemyindex);
 	checkHealth(currentenemy);
 
+	if (!muted) {
+		laserSound.currentTime = 0;
+        laserSound.play();
+   	}
+
+   	player_img.src = "images/player3.png";
+
  }
 
 }
@@ -369,6 +399,7 @@ function handleCollisions() {
 			if (enemy.type === enemytype.ENEMY) {
 				
 				player.lives--;
+				player_img.src = "images/player2.png";
 				
 			}
 			
@@ -390,6 +421,24 @@ function gameOver() {
 	storeAchievements();
 	
 	gameover = true;
+
+	if (!muted) {
+
+		toggleAllSounds();
+
+	}
+
+	var grd=context.createLinearGradient(0,0,0,800);
+	grd.addColorStop(0,"#091926");
+	grd.addColorStop(1,"#3D5B73");
+
+	// Fill with gradient
+	context.fillStyle=grd;
+	context.fillRect(0, 0, 800, 600);
+
+	canvas.addEventListener("click",checkMouse,false);
+	gameOverScreen.active = true;
+	gameOverScreen.draw();	
 	
 }
 
@@ -406,14 +455,18 @@ function pauseGame() {
 		
 		if (!help.active) {
 		
-			pause.draw(true);	
+			pause.draw(true);
+
+			pauseScreen.active = true;
+			pauseScreen.draw();
 			
 		}
-		
 
 	} else if (!gameover) {
 	
 		pause.active = false;
+
+		pauseScreen.active = false;
 	
 		timer = setInterval(function() {
 	

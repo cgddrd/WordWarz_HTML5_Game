@@ -12,7 +12,7 @@ var enemies = [];
 var playerBullets = [];
 
 var player_img = new Image();
-player_img.src = "images/test.png";
+player_img.src = "images/player1.png";
 
 var player = {
 
@@ -40,10 +40,12 @@ var enemytype = {
  };
     	
 var pause = new PauseButton();
+var pauseScreen = new PauseScreen();
 var helpButton = new HelpButton();
 var help = new HelpScreen();
 var muteButton = new MuteButton();
 var welcome = new WelcomeScreen();
+var gameOverScreen = new GameOverScreen();
 
 function getPlayer() {
 
@@ -130,6 +132,8 @@ function drawGame() {
 	clearCanvas();
 	
 	player.draw();
+
+	player_img.src = "images/player1.png";
 
 	enemies.forEach(function(enemy) {
 	
@@ -231,11 +235,7 @@ function generateNewEnemies(array, speed) {
 		newEnemy.name = array[i].word;
 		newEnemy.score = array[i].score;
 		newEnemy.displayName = newEnemy.name;
-
-		//var metrics = context.measureText(newEnemy.displayName);
-      	//newEnemy.textWidth = metrics.width;
-
-      	newEnemy.textWidth = (newEnemy.displayName.length * 7);
+      //newEnemy.textWidth = (newEnemy.displayName.length * 7);
 
 		newEnemy.health = (array[i].word.length);
 		
@@ -343,11 +343,6 @@ function updatePlayer() {
 			letterIndex: newLetterIndex,
 			target: enemies[enemyIndex]
 		}));
-		
-		 if (!muted) {
-		 	laserSound.currentTime = 0;
-         	laserSound.play();
-   	 	}
 	};
 
 	player.midpoint = function() {
@@ -450,12 +445,16 @@ function Enemy(I) {
 	}
 		
 		context.fillStyle = "rgba(0, 0, 0, 0.5)";
-		context.fillRect(this.x + 20, this.y, I.textWidth, 20);
+
+		var metrics = context.measureText(I.displayName);
+      	I.textWidth = metrics.width;
+
+		context.fillRect(this.x + 20, this.y, I.textWidth, 25);
 
 		context.font = "300 14pt Oswald";
 		context.fillStyle = I.textColor;
 		
-		context.fillText(I.displayName, (this.x + 20), this.y + 15);
+		context.fillText(I.displayName, (this.x + 20), this.y + 18);
 
 		/*
 		context.beginPath();
@@ -496,8 +495,12 @@ function Bullet(I) {
 	I.coords = generatePath(I.x, I.y, I.target.x, I.target.y);
 
 	I.draw = function() {
-		context.fillStyle = this.color;
-		context.fillRect(this.x, this.y, this.width, this.height);
+	  var radius = 2;
+
+      context.beginPath();
+      context.arc(this.x, this.y, radius, 0, 2 * Math.PI, false);
+      context.fillStyle = '#eee';
+      context.fill();
 	};
 
 	I.update = function() {
@@ -704,18 +707,18 @@ function WelcomeScreen(I) {
 	I = I || {};
 
 	I.active;
-	I.x = 100;
-	I.y = 50;
+	I.x = (CANVAS_WIDTH / 2) - 150;
+	I.y = (CANVAS_HEIGHT / 2) - 100;
 	I.width = 300;
 	I.height = 200;
-	I.color = "rgba(0, 0, 0, 0.8)";
+	I.color = "rgba(0, 0, 0, 0.7)";
 	
 	I.button = {
 		
-		x: (I.width - 60),
-		y: (I.height - 5),
+		x: ((I.x + (I.width / 2)) - 70),
+		y: ((I.y + I.height) - 60),
 		height: 40,
-		width: 130
+		width: 140
 		
 	};
 
@@ -724,16 +727,122 @@ function WelcomeScreen(I) {
 		context.fillStyle = this.color;
 		context.fillRect(this.x, this.y, this.width, this.height);
 		
-		context.fillStyle = '#fff';	
-		context.font = '18pt Arial';
-		context.fillText("In-Game Help Screen:", (I.x + 20), (I.y + 40));
+		context.fillStyle = '#eee';	
+		context.font = '300 26pt Oswald';
+		context.fillText("WordWarz", (I.x + (85)), (I.y + 60));
 
 		context.fillStyle = '#eee';	
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
 		
-		context.font = " bold 12pt Oswald";
+		context.font = '300 10pt Oswald';
+		context.fillText("By", (I.x + (140)), (I.y + 90));
+
+		context.font = '300 12pt Oswald';
+		context.fillText("Connor Goddard (clg11)", (I.x + (85)), (I.y + 110));
+
+		context.font = '400 12pt Oswald';
 		context.fillStyle = '#333';
-		context.fillText("Continue", (this.button.x + 25), (this.button.y + 25));
+		context.fillText("Begin Game", (this.button.x + 30), (this.button.y + 25));
+	};
+
+	I.buttonInBounds = function(inputX, inputY) {
+		
+		return (inputX > this.button.x && inputX < (this.button.x + this.button.width)) 
+			&& (inputY > this.button.y && inputY < (this.button.y + this.button.height));
+		
+	}
+
+	return I;
+}
+
+function GameOverScreen(I) {
+
+	I = I || {};
+
+	I.active;
+	I.x = (CANVAS_WIDTH / 2) - 150;
+	I.y = (CANVAS_HEIGHT / 2) - 100;
+	I.width = 300;
+	I.height = 200;
+	I.color = "rgba(0, 0, 0, 0.7)";
+	
+	I.button = {
+		
+		x: ((I.x + (I.width / 2)) - 70),
+		y: ((I.y + I.height) - 60),
+		height: 40,
+		width: 140
+		
+	};
+
+	I.draw = function() {
+		
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		
+		context.fillStyle = '#eee';
+		context.font = '300 26pt Oswald';
+		context.fillText("Game Over", (I.x + (80)), (I.y + 60));
+
+		context.fillStyle = '#eee';	
+		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
+		
+		context.font = '300 12pt Oswald';
+		context.fillText("Your Score: " + player.score, (I.x + (110)), (I.y + 90));
+
+		context.font = '400 12pt Oswald';
+		context.fillStyle = '#333';
+		context.fillText("Restart Game", (this.button.x + 25), (this.button.y + 25));
+	};
+
+	I.buttonInBounds = function(inputX, inputY) {
+		
+		return (inputX > this.button.x && inputX < (this.button.x + this.button.width)) 
+			&& (inputY > this.button.y && inputY < (this.button.y + this.button.height));
+		
+	}
+
+	return I;
+}
+
+function PauseScreen(I) {
+
+	I = I || {};
+
+	I.active;
+	I.x = (CANVAS_WIDTH / 2) - 150;
+	I.y = (CANVAS_HEIGHT / 2) - 100;
+	I.width = 300;
+	I.height = 200;
+	I.color = "rgba(0, 0, 0, 0.7)";
+	
+	I.button = {
+		
+		x: ((I.x + (I.width / 2)) - 70),
+		y: ((I.y + I.height) - 60),
+		height: 40,
+		width: 140
+		
+	};
+
+	I.draw = function() {
+		
+		context.fillStyle = this.color;
+		context.fillRect(this.x, this.y, this.width, this.height);
+		
+		context.fillStyle = '#eee';
+		context.font = '300 26pt Oswald';
+		context.fillText("Game Paused", (I.x + (65)), (I.y + 60));
+
+		context.fillStyle = '#eee';	
+		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
+		
+		context.font = '300 12pt Oswald';
+		context.fillText("Your Score: " + player.score + "   Lives: " + player.lives + "   Level: " + currentLevel, (I.x + 65), (I.y + 90));
+
+		context.font = '400 12pt Oswald';
+		context.fillStyle = '#333';
+		context.fillText("Continue Game", (this.button.x + 25), (this.button.y + 25));
 	};
 
 	I.buttonInBounds = function(inputX, inputY) {
@@ -798,6 +907,18 @@ function checkMouse(mouse_event) {
 	if (welcome.buttonInBounds(mousex, mousey) && welcome.active) {
 		
 		initGame();
+		
+	}
+
+	if (gameOverScreen.buttonInBounds(mousex, mousey) && gameOverScreen.active) {
+		
+		welcomeGame();
+		
+	}
+
+	if (pauseScreen.buttonInBounds(mousex, mousey) && pauseScreen.active) {
+		
+		pauseGame();
 		
 	}
 }
