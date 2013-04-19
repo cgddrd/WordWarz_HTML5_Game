@@ -1,13 +1,174 @@
+*{
+    margin: 0;
+    padding:0;
+
+}
+
+html, body {
+	height: 100%;
+	background-color: #eee;
+}
+
+ #site_header {
+
+ 	width: 100%;
+ 	background: #eee;
+ 	padding-bottom: 20px;
+ 	margin-top: 5px;
+ 	border-bottom: solid 1px #999;
+
+ }
+
+ #site_header h1 {
+
+ 	text-align: center;
+ 	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 72px;
+ 	margin-bottom: -20px;
+ }
+
+
+ #site_header h2 {
+
+ 	margin-top: 10px;
+ 	text-align: center;
+ 	font-family: 'Raleway', sans-serif;
+ 	font-weight: 400;
+ 	font-size: 16px;
+ }
+
+  #site_header a {
+ 	text-decoration: none;
+ 	color: #000;
+ }
+
+ #site_container {
+
+	width:1100px;
+	margin: 0 auto;
+	background: #999;
+	padding: 20px;
+	overflow: hidden;
+ }
+
 #canvas_container {
 	
-	width:800px;
-	height:600px;
-	margin: 0 auto; 
+	width:700px;
+	height:550px;
+	float: left;
+	margin-right: 20px;
+	margin-left: 10px;
 }
 
 #main_canvas {
 	border:solid 2px #000;
 }
 
-font-family: 'Open Sans', sans-serif;
-font-family: 'Oswald', sans-serif;
+#stats_container{
+	width: 360px;
+	height: 560px;
+	margin-bottom: 10px;
+	float: left;
+}
+
+#achieve {
+	width: 335px;
+	/*height: 280px;*/
+	padding: 5px;
+	margin: 20px auto;
+}
+
+#achieve h1 {
+	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 24px;
+ }
+
+ .red {
+
+ 	color: #FF7B29;
+ }
+
+#achieve ul {
+	width:100%;
+}
+
+#achieve li {
+	list-style-type: none;
+	padding: 5px;
+	background: #333;
+	margin-bottom: 5px;
+}
+
+#achieve li h1 {
+	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 16px;
+ 	color: #eee;
+}
+
+#words {
+	margin: 10px auto;
+	width: 335px;
+	height: 140px;
+	padding: 5px;
+	overflow-x:hidden;
+	overflow-y:auto;
+}
+
+#words h1 {
+	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 24px;
+ }
+
+#words ul {
+	width:100%;
+}
+
+#words li {
+	list-style-type: none;
+	padding: 5px;
+	background: #333;
+	margin-bottom: 5px;
+}
+
+#words li h1 {
+	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 16px;
+ 	color: #eee;
+}
+
+#score {
+	margin: 0 auto;
+	width: 330px;
+	height: 55px;
+	padding: 5px;
+	padding-left: 10px;
+	background: #333;
+}
+
+#score h1 {
+	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 36px;
+ 	color: #eee;
+ }
+
+ #wpm {
+	margin: 20px auto;
+	width: 330px;
+	height: 55px;
+	padding: 5px;
+	padding-left: 10px;
+	background: #333;
+}
+
+#wpm h1 {
+	font-family: 'Oswald', sans-serif;
+ 	font-weight: 100;
+ 	font-size: 36px;
+ 	color: #eee;
+ }

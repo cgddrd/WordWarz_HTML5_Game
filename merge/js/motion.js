@@ -295,9 +295,6 @@ function updateEnemies() {
 			enemy.update();	
 
 		}
-		
-		//console.log("ALIVE ENEMY: " + enemy.name + " - " + enemy.health + " - " + enemy.used + " - " + enemy.active);
-		
 	}
 		
 	}); 
@@ -593,7 +590,7 @@ function MuteButton(I) {
 
 	I = I || {};
 
-	I.x = 150;
+	I.x = 140;
 	I.y = 10;
 	I.width = 50;
 	I.height = 20;
@@ -602,7 +599,7 @@ function MuteButton(I) {
 	I.draw = function() {
 		context.font = '300 14pt Oswald';
 		context.fillStyle = '#fff';
-		context.fillText("Mute", (this.x + 5), (this.y + 16));
+		context.fillText("Toggle Sound", (this.x + 5), (this.y + 16));
 		
 	};
 	
@@ -624,15 +621,15 @@ function HelpScreen(I) {
 	I.x = 100;
 	I.y = 50;
 	I.width = 550;
-	I.height = 500;
+	I.height = 480;
 	I.color = "rgba(0, 0, 0, 0.8)";
 	I.shipImage = loadImages(enemytype.ENEMY);
 	I.healthImage = loadImages(enemytype.HEALTH);
 	
 	I.button = {
 		
-		x: (I.width - 60),
-		y: (I.height - 5),
+		x: (I.width - 80),
+		y: (I.height - 10),
 		height: 40,
 		width: 130
 		
@@ -644,52 +641,48 @@ function HelpScreen(I) {
 		context.fillRect(this.x, this.y, this.width, this.height);
 		
 		context.fillStyle = '#fff';	
-		context.font = '18pt Arial';
-		context.fillText("In-Game Help Screen:", (I.x + 20), (I.y + 40));
+		context.font = '300 18pt Oswald';
+		context.fillText("Game Help:", (I.x + 20), (I.y + 40));
 
-		context.font = '12pt "Trebuchet MS"';
-		context.fillText("Welcome to WordWarz!", (I.x + 20), (I.y + 80));
-		context.fillText("Like robot wars, but with words. (and less Craig Charles)", (I.x + 20), (I.y + 100));
+		context.font = '300 14pt Oswald';
+		context.fillText("Aim", (I.x + 20), (I.y + 90));
 
-		context.font = '14pt Arial';
-		context.fillText("Aim", (I.x + 20), (I.y + 140));
+		context.font = '10pt Open Sans';
+		context.fillText("Shoot down as many ships as you possibly can by correctly spelling the", (I.x + 30), (I.y + 110));
+		context.fillText("words that represent them.", (I.x + 30), (I.y + 125));
 
-		context.font = '11pt "Trebuchet MS"';
-		context.fillText("Shoot down as many ships as you possibly can by correctly spelling the", (I.x + 30), (I.y + 160));
-		context.fillText("words that represent them.", (I.x + 30), (I.y + 175));
+		context.font = '300 14pt Oswald';
+		context.fillText("How to Play", (I.x + 20), (I.y + 175));
 
-		context.font = '14pt Arial';
-		context.fillText("How to Play", (I.x + 20), (I.y + 210));
+		context.font = '10pt Open Sans';
+		context.fillText("Simply type in words as they appear on the screen using your keyboard.", (I.x + 30), (I.y + 195));
+		context.fillText("You can only enter one word at a time, and the whole word must", (I.x + 30), (I.y + 230));
+		context.fillText("be spelt correctly before continuing. If you mis-spell a word,", (I.x + 30), (I.y + 245));
+		context.fillText("simply continue from the point at which you went wrong, there is no", (I.x + 30), (I.y + 260));
+		context.fillText("need to re-enter the entire word again.", (I.x + 30), (I.y + 275));
 
-		context.font = '11pt "Trebuchet MS"';
-		context.fillText("Simply type in words as they appear on the screen using your keyboard.", (I.x + 30), (I.y + 230));
-		context.fillText("You can only enter one word at a time, and the whole word must", (I.x + 30), (I.y + 260));
-		context.fillText("be spelt correctly before continuing. If you mis-spell a word,", (I.x + 30), (I.y + 275));
-		context.fillText("simply continue from the point at which you went wrong, there is no", (I.x + 30), (I.y + 290));
-		context.fillText("need to re-enter the entire word again.", (I.x + 30), (I.y + 305));
-
-		context.font = '14pt Arial';
-		context.fillText("Game Elements", (I.x + 20), (I.y + 340));
-		context.drawImage(I.shipImage, (I.x + 60), (I.y + 360),48, 48);
+		context.font = '300 14pt Oswald';
+		context.fillText("Game Elements", (I.x + 20), (I.y + 325));
+		context.drawImage(I.shipImage, (I.x + 60), (I.y + 340),48, 48);
 		
-		context.font = '11pt "Trebuchet MS"';
-		context.fillText("These are the enemy ships.", (I.x + 120), (I.y + 380));
-		context.fillText("DESTROY = Your score + (Points x word length)", (I.x + 120), (I.y + 395));
-		context.fillText("COLLISION = 1 life lost", (I.x + 120), (I.y + 410));
+		context.font = '10pt Open Sans';
+		context.fillText("These are the enemy ships.", (I.x + 120), (I.y + 360));
+		context.fillText("DESTROY = Your score + (Points x word length)", (I.x + 120), (I.y + 375));
+		context.fillText("COLLISION = 1 life lost", (I.x + 120), (I.y + 390));
 
-		context.drawImage(I.healthImage, (I.x + 60), (I.y + 430),48, 48);
+		context.drawImage(I.healthImage, (I.x + 60), (I.y + 410),48, 48);
 		
-		context.font = '11pt "Trebuchet MS"';
-		context.fillText("These are health vessels.", (I.x + 120), (I.y + 450));
-		context.fillText("DESTROY = +1 life", (I.x + 120), (I.y + 465));
-		context.fillText("COLLISION = Nothing", (I.x + 120), (I.y + 480));
+		context.font = '10pt Open Sans';
+		context.fillText("These are health vessels.", (I.x + 120), (I.y + 430));
+		context.fillText("DESTROY = +1 life", (I.x + 120), (I.y + 445));
+		context.fillText("COLLISION = Nothing", (I.x + 120), (I.y + 460));
 
 		context.fillStyle = '#eee';	
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
 		
-		context.font = "bold 12pt Open Sans";
+		context.font = '400 12pt Oswald';
 		context.fillStyle = '#333';
-		context.fillText("Continue", (this.button.x + 25), (this.button.y + 25));
+		context.fillText("Continue Game", (this.button.x + 15), (this.button.y + 25));
 	};
 
 	I.buttonInBounds = function(inputX, inputY) {

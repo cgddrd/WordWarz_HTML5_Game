@@ -5,6 +5,7 @@
     <title>Merge | IWP (clg11)</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Oswald:400,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,200,100' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/style.css">
     <script src="lib/jquery-1.9.1.min.js"></script>
     <script src="lib/jquery-migrate-1.1.1.min.js"></script>
@@ -12,13 +13,55 @@
 
 <body onload="welcomeGame()">
 
-<div id="canvas_container">
-    <canvas id="main_canvas" width="800" height="600">This text is displayed if your browser does not support HTML5 Canvas.</canvas> 
+ <div id="site_header">
+           <h1>WordWarz</h1>
+           <h2 class="smalltext">Like robot wars, but with less Craig Charles.</h2>
+           <h2><a href="#">Home</a> | <a href="#">About</a></h2>
 </div>
 
-    <div id="highscore"></div>
-    <div id="achieve"></div>
-    
+    <div id="site_container">
+
+        <div id="canvas_container">
+            <canvas id="main_canvas" width="700" height="550">This text is displayed if your browser does not support HTML5 Canvas.</canvas> 
+        </div>
+
+        <div id="stats_container">
+
+            <div id="score">
+                <h1>Your best score: 246</h1>
+            </div>
+
+            <div id="wpm">
+                <h1>Current WPM: 0</h1>
+            </div>
+
+            <div id="achieve">
+
+                <h1>Your Acheivements</h1>
+                <ul>
+                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                </ul>
+
+            </div>
+
+            <div id="words">
+
+                <h1>Latest Words:</h1>
+                <ul>
+                    <li><h1>add - <span class="red"> Complete</span><h1></li>
+                    <li><h1>retrospect - <span class="red"> Complete</span><h1></li>
+                </ul>
+            </div>
+        </div>
+
+
+    </div> 
+
     <audio id="powerupSound">
         <source src="sounds/powerup.wav" type="audio/x-wav" />
         Your browser does not support the audio tag.
@@ -43,9 +86,6 @@
     <script type = 'text/javascript' src = 'js/highscore.js'></script>
     <script type = 'text/javascript' src = 'js/motion.js'></script>
     <script type = 'text/javascript' src = 'js/dict.js'></script>
-    <script type = 'text/javascript' src = 'js/game.js'></script>
-    
-  
-    
+    <script type = 'text/javascript' src = 'js/game.js'></script>   
 </body>
 </html>

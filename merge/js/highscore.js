@@ -3,6 +3,9 @@ var score_achievements = [];
 var time_achievements = [];
 var player_achievements = [];
 
+var wordList = [];
+var wordListIndex = 0;
+
 var achieveType = {
     TIME: 0,
     WORD: 1,
@@ -22,6 +25,8 @@ function Achievement(newDes, newCriteria) {
 function setStartTime() {
 	
 	startTime = new Date();
+	wpmTime = startTime.getTime();
+	console.log(startTime.getTime());
 	
 }
 
@@ -49,9 +54,14 @@ function addNewDefaultAchievement(description, value, type) {
 
 function setDefaultAchievements() {
 	
-	addNewDefaultAchievement("Played for more than 10 secs", 10, achieveType.TIME);
-	addNewDefaultAchievement("Played for more than 60 secs", 60, achieveType.TIME);
-	addNewDefaultAchievement("Got a total score > 100", 100, achieveType.SCORE);
+	addNewDefaultAchievement("Played for more than 10 seconds", 10, achieveType.TIME);
+	addNewDefaultAchievement("Played for more than 60 seconds", 60, achieveType.TIME);
+	addNewDefaultAchievement("Played for more than 5 minutes", 300, achieveType.TIME);
+	addNewDefaultAchievement("Played for more than 10 minutes", 600, achieveType.TIME);
+	addNewDefaultAchievement("Total score > 100", 100, achieveType.SCORE);
+	addNewDefaultAchievement("Total score > 200", 200, achieveType.SCORE);
+	addNewDefaultAchievement("Total score > 500", 500, achieveType.SCORE);
+	addNewDefaultAchievement("Total score > 1000", 1000, achieveType.SCORE);
 	
 }
 
@@ -59,6 +69,7 @@ function checkAllAchievements() {
 
 	checkTimeAchievements();
 	checkScoreAchievements();
+	updateWordListDisplay();
 		
 }
 
@@ -125,23 +136,27 @@ function addPlayerAchievement(newAchievement) {
 
 function displayAchievements() {
 
+	$("#achieve").html("");
+
+	var achieveList = '<h1>Your Acheivements</h1><ul>';
+
 	if (player_achievements.length > 0) {
-		
-		$("#achieve").html("");
-	
-		var achieveList = '<h1>Achievements:</h1><ul>';
-		
+
 		for (var i = 0, len = player_achievements.length; i < len; i++) {
 		
-		  achieveList += '<li>' + player_achievements[i].des + '</li>';
-		  
+		  achieveList += '<li><h1>' + player_achievements[i].des + '. - <span class="red"> Complete</span><h1></li>';
+ 
 		}
 		
 		achieveList += '</ul>';
-		
-		$('#achieve').append(achieveList);
-		
+
+	} else {
+
+		achieveList += '<li><h1>No acheivements unlocked.<h1></li></ul>';
+
 	}
+
+	$('#achieve').append(achieveList);
 	
 }
 
@@ -167,14 +182,72 @@ function loadAchievements() {
 	
 		player_achievements = JSON.parse(localStorage.getItem("player_achievements"));
 		
-		displayAchievements();
-		
 	}
+
+	displayAchievements();
+
+	$("#score").html("");
 	
-	if (checkLocalStorageSupport() && localStorage.getItem("player_highscore")) {
+	if (checkLocalStorageSupport() && JSON.parse(localStorage.getItem("player_highscore"))) {
 		
-		$('#achieve').append("<p>Score: " + localStorage.getItem("player_highscore") + "</p>");
+		$('#score').append("<h1>Your best score: " + JSON.parse(localStorage.getItem("player_highscore")) + "</h1>");
 		
+	} else {
+
+		$('#score').append("<h1>No best score set.</h1>");
+
+	} 
+
+	updateWordListDisplay();
+	
+}
+
+function updateWordList(newWord) {
+
+		wordList[wordListIndex] = newWord;
+
+		if (wordListIndex === 0) {
+
+			wordListIndex = 1;
+
+		} else {
+
+			wordListIndex = 0;
+
+		}
+
+}
+
+function updateWordListDisplay() {
+
+	$("#words").html("");
+
+	var wordListString = '<h1>Latest Words</h1><ul>';
+
+	if (wordList.length > 0) {
+
+		for (var i = 0, len = wordList.length; i < len; i++) {
+		
+		  wordListString += '<li><h1>' + wordList[i] + '<h1></li>';
+ 
+		}
+		
+		wordListString += '</ul>';
+
+	} else {
+
+		wordListString += '<li><h1>No words defeated.<h1></li></ul>';
+
 	}
+
+	$('#words').append(wordListString);
+
+}
+
+function updateWPMDisplay(newWPM) {
+
+	$("#wpm").html("");
 	
+	$('#wpm').append("<h1>Current WPM: " + newWPM + "</h1>");
+		
 }

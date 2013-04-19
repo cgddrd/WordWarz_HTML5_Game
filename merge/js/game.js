@@ -9,7 +9,8 @@ var enemyspeed = 1;
 var enemySpawnTime = 1000;
 var enemySpawnDelay = 0.025;
 var wordLimit = 5;
-var bulletcount = 0;
+var inputChars = 0;
+var wpmTime = 0;
 
 var powerupSound = $("#powerupSound").get(0);
 var laserSound = $("#laserSound").get(0);
@@ -44,12 +45,24 @@ var levelEnum = {
             s.parentNode.insertBefore(wf, s);
     }();
 
+
+$(document).ready(function(){
+  $(window).blur(function(){
+    if (timer != null) {
+
+    	pauseGame();
+    }
+  });
+});
+
 function welcomeGame() {
 	
 	if (gameover === true) {
 		resetGame();
 		gameOverScreen.active = false;
 	}
+
+	loadAchievements();
 
 	var grd=context.createLinearGradient(0,0,0,800);
 	grd.addColorStop(0,"#091926");
@@ -129,8 +142,6 @@ function initGame() {
 
 	setStartTime();
 	
-	loadAchievements();
-
 	startLevel();
 
 }
@@ -244,6 +255,8 @@ function startLevel() {
 		handleCollisions();
 		
 		checkAllAchievements();
+
+		calcWPM();
 		
 		
 	}, 1000 / FPS);	
@@ -305,6 +318,8 @@ function checkHealth(theEnemy) {
         	}
 			
 		}
+
+		updateWordList(theEnemy.name);
 		
 		theEnemy.active = false;
 		theEnemy.used = true;
@@ -312,6 +327,7 @@ function checkHealth(theEnemy) {
 		currentenemyindex = 0;
 		
 		clearBullets();		
+
 	} else {
 
 		currentenemyindex++;
@@ -414,6 +430,29 @@ function handleCollisions() {
 
 }
 
+function calcWPM() {
+
+	var d = new Date();
+	var current = d.getTime();
+	var difference = current - wpmTime;
+
+	if (difference >= 10000) {
+
+		var test = (Math.ceil(inputChars / 5));
+		var test2 = test * 6;
+
+		wpmTime = current;
+
+		inputChars = 0;
+
+		//console.log("WPM = " + test2);
+
+		updateWPMDisplay(test2);
+
+	}
+
+}
+
 function gameOver() {
 	
 	clearInterval(timer);
@@ -512,6 +551,7 @@ document.onkeydown = function(event) {
   
   if (keyCode >= 65 && keyCode <= 122) {
     
+    inputChars++;
     checkUserInput(keyCode);
 	    
   }
