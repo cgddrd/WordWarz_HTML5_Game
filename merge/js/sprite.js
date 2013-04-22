@@ -1,3 +1,18 @@
+/**
+ * Holds the variety of sprite data objects used within the game.
+ * 
+ * @author Connor Luke Goddard (clg11)
+ */
+
+/**
+ * Represents the sprite object for a enemy within the 
+ * game. Holds a number of specific variables and member functions
+ * unique to an enemy sprite, and allows new enemy objects to be instantiated. 
+ *
+ * @constructor
+ * @this {Enemy}
+ * @param I Constructor object for an enemy. 
+ */
 function Enemy(I) {
 
 	I = I || {};
@@ -28,8 +43,10 @@ function Enemy(I) {
 	I.textColor = '#eee';
 	I.textWidth;
 
+	//Determines the starting Y position of the enemy on the canvas. 
 	I.x = Math.floor(Math.random() * CANVAS_WIDTH) + 1;
 
+	//Determines the starting Y position of the enemy on the canvas. 
 	if (determineStart() === 2) {
 	
 		I.y = 0;
@@ -40,6 +57,7 @@ function Enemy(I) {
 		
 	} 
 
+	//Sets the angle direction that the enemy must face.
 	I.setAngle = function() {
 
 		var centrex = I.coords[Math.floor(I.coords.length / 2)].x;
@@ -54,51 +72,46 @@ function Enemy(I) {
 
 	};
 
+	//Draws the enemy sprite to the canvas. 
 	I.draw = function() {
+			
+			context.save();
+			
+			//Set the origin to the centre of the sprite..
+			context.translate(this.x, this.y);
 	
-	if (I.type === enemytype.ENEMY) {
-		
-		context.save();
-		
-		//Set the origin to the center of the image
-		context.translate(this.x, this.y);
+			//If the enemy uses the "space ship" image
+			if (I.type === enemytype.ENEMY) {
+			
+				//Rotate the sprite to face the enemy.  
+				context.rotate(this.angle);
+			
+			}
+	
+			context.drawImage(I.image, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
+	
+			context.restore();
 
-		context.rotate(this.angle);
-
-		context.drawImage(I.image, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
-
-		context.restore();
-		
-	} else {
-		
-		context.save();
-		context.translate(this.x, this.y);
-		context.drawImage(I.image, (I.width / 2 * (-1)), (I.height / 2 * (-1)), I.width, I.height);
-		context.restore();
-		
-	}
 		
 		context.fillStyle = "rgba(0, 0, 0, 0.5)";
-
+	
+		//Determine the pixel width of the enemy display name.
 		var metrics = context.measureText(I.displayName);
-      	I.textWidth = metrics.width;
-
-		context.fillRect(this.x + 20, this.y, I.textWidth, 25);
-
-		context.font = "300 14pt Oswald";
+		
+		//Set the width of the display text background box.
+	    I.textWidth = metrics.width;
+	
+	    context.fillRect(this.x + 20, this.y, I.textWidth, 25);
+	
+	    context.font = "300 14pt Oswald";
 		context.fillStyle = I.textColor;
 		
+		//Draw the enemy display name to the canvas. 
 		context.fillText(I.displayName, (this.x + 20), this.y + 18);
-
-		/*
-		context.beginPath();
-      	context.moveTo(I.coords[0].x, I.coords[0].y);
-      	context.lineTo(I.coords[I.coords.length - 1].x, I.coords[I.coords.length - 1].y);
-      	context.stroke(); 
-      	*/
 
 	};
 
+	//Updates the positon coordinates of the enemy to follow it's generated path. 
 	I.update = function() {
 
 		if (I.coordsIndex < I.coords.length) {
@@ -109,12 +122,24 @@ function Enemy(I) {
 
 	};
 
+	//Generate the shortest path between the current enemy and the player sprite. 
 	I.coords = generatePath(I.x, I.y, (player.x + (player.width / 2)), (player.y + (player.height / 2)));
+	
+	//Set the rotation angle of the current enemy sprite. 
 	I.setAngle();
 
 	return I;
 };
 
+/**
+ * Represents the sprite object for an indivual bullet within the 
+ * game. Holds a number of specific variables and member functions
+ * unique to an bullet sprite, and allows new bullet objects to be instantiated. 
+ *
+ * @constructor
+ * @this {Bullet}
+ * @param I Constructor object for an bullet. 
+ */
 function Bullet(I) {
 
 	I = I || {};
@@ -129,12 +154,15 @@ function Bullet(I) {
 	I.coords = generatePath(I.x, I.y, I.target.x, I.target.y);
 
 	I.draw = function() {
+	
 	  var radius = 2;
-
+	  
+	  //Draw a circle to represent the bullet.
       context.beginPath();
       context.arc(this.x, this.y, radius, 0, 2 * Math.PI, false);
       context.fillStyle = '#eee';
       context.fill();
+      
 	};
 
 	I.update = function() {
@@ -156,6 +184,13 @@ function Bullet(I) {
 	return I;
 }
 
+/**
+ * Represents the pause control button, and allows a new pause button to be instantiated. 
+ *
+ * @constructor
+ * @this {PauseButton}
+ * @param I Constructor object for an new pause button. 
+ */
 function PauseButton(I) {
 
 	I = I || {};
@@ -196,6 +231,13 @@ function PauseButton(I) {
 	return I;
 }
 
+/**
+ * Represents the view help button, and allows the button to be instantiated. 
+ *
+ * @constructor
+ * @this {HelpButton}
+ * @param I Constructor object for an new view help button. 
+ */
 function HelpButton(I) {
 
 	I = I || {};
@@ -223,6 +265,13 @@ function HelpButton(I) {
 	return I;
 }
 
+/**
+ * Represents the mute sound button, and allows the button to be instantiated. 
+ *
+ * @constructor
+ * @this {MuteButton}
+ * @param I Constructor object for an new mute sound button. 
+ */
 function MuteButton(I) {
 
 	I = I || {};
@@ -250,6 +299,14 @@ function MuteButton(I) {
 	return I;
 }
 
+/**
+ * Represents the in-game help screen dialog window, 
+ * and allows a new window to be instantiated and displayed on the canvas. 
+ *
+ * @constructor
+ * @this {HelpScreen}
+ * @param I Constructor object for an new in-game help dialog. 
+ */
 function HelpScreen(I) {
 
 	I = I || {};
@@ -260,8 +317,10 @@ function HelpScreen(I) {
 	I.width = 550;
 	I.height = 480;
 	I.color = "rgba(0, 0, 0, 0.8)";
-	I.shipImage = loadImages(enemytype.ENEMY);
-	I.healthImage = loadImages(enemytype.HEALTH);
+	
+	//Load the example images of the various enemy sprites. 
+	I.shipImage = loadEnemyImages(enemytype.ENEMY);
+	I.healthImage = loadEnemyImages(enemytype.HEALTH);
 	
 	I.button = {
 		
@@ -332,6 +391,14 @@ function HelpScreen(I) {
 	return I;
 }
 
+/**
+ * Represents the welcome screen dialog window, 
+ * and allows a new window to be instantiated and displayed on the canvas. 
+ *
+ * @constructor
+ * @this {WelcomeScreen}
+ * @param I Constructor object for an new welcome dialog. 
+ */
 function WelcomeScreen(I) {
 
 	I = I || {};
@@ -385,6 +452,14 @@ function WelcomeScreen(I) {
 	return I;
 }
 
+/**
+ * Represents the game over dialog window, 
+ * and allows a new window to be instantiated and displayed on the canvas. 
+ *
+ * @constructor
+ * @this {GameOverScreen}
+ * @param I Constructor object for a new game over dialog. 
+ */
 function GameOverScreen(I) {
 
 	I = I || {};
@@ -435,6 +510,14 @@ function GameOverScreen(I) {
 	return I;
 }
 
+/**
+ * Represents the in-game pause dialog window, 
+ * and allows a new window to be instantiated and displayed on the canvas. 
+ *
+ * @constructor
+ * @this {PauseScreen}
+ * @param I Constructor object for an new in-game pause dialog. 
+ */
 function PauseScreen(I) {
 
 	I = I || {};
@@ -468,6 +551,8 @@ function PauseScreen(I) {
 		context.fillRect(this.button.x, this.button.y, this.button.width, this.button.height);
 		
 		context.font = '300 12pt Oswald';
+		
+		//Display the current score of the user on screen.
 		context.fillText("Your Score: " + player.score + "   Lives: " + player.lives + "   Level: " + currentLevel, (I.x + 65), (I.y + 90));
 
 		context.font = '400 12pt Oswald';
@@ -483,72 +568,4 @@ function PauseScreen(I) {
 	}
 
 	return I;
-}
-
-function createHelpScreen() {
-	
-	if (!help.active) {
-		
-		help.draw();
-		help.active = true;
-			
-	} else {
-		
-		help.active = false;
-	}
-	
-	pauseGame();
-	
-}
-
-function checkMouse(mouse_event) {
-	
-	var bounding_box = canvas.getBoundingClientRect();
-	
-	var mousex = (mouse_event.clientX-bounding_box.left) * (canvas.width/bounding_box.width);	
-        
-    var mousey = (mouse_event.clientY-bounding_box.top) * (canvas.height/bounding_box.height);	
-	
-	if (pause.inBounds(mousex, mousey) && !(help.active)) {
-		
-		pauseGame();
-	
-	}
-	
-	if (helpButton.inBounds(mousex, mousey) && !(help.active) && !(pause.active)) {
-		
-		createHelpScreen();
-	
-	}
-
-	if (muteButton.inBounds(mousex, mousey) && !(help.active) && !(pause.active)) {
-		
-		toggleAllSounds();
-	
-	}
-	
-	
-	if (help.buttonInBounds(mousex, mousey)) {
-		
-		createHelpScreen();
-		
-	}
-	
-	if (welcome.buttonInBounds(mousex, mousey) && welcome.active) {
-		
-		initGame();
-		
-	}
-
-	if (gameOverScreen.buttonInBounds(mousex, mousey) && gameOverScreen.active) {
-		
-		welcomeGame();
-		
-	}
-
-	if (pauseScreen.buttonInBounds(mousex, mousey) && pauseScreen.active) {
-		
-		pauseGame();
-		
-	}
 }
