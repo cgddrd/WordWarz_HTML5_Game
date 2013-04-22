@@ -48,14 +48,34 @@ var levelEnum = {
 
 $(document).ready(function(){
   $(window).blur(function(){
-    if (timer != null) {
-
+    if (timer != null && gameover === false) {
     	pauseGame();
     }
   });
 });
 
+// Prevent the backspace key from navigating back.
+$(document).unbind('keydown').bind('keydown', function (event) {
+    var doPrevent = false;
+    if (event.keyCode === 8) {
+        var d = event.srcElement || event.target;
+        if ((d.tagName.toUpperCase() === 'INPUT' && (d.type.toUpperCase() === 'TEXT' || d.type.toUpperCase() === 'PASSWORD')) 
+             || d.tagName.toUpperCase() === 'TEXTAREA') {
+            doPrevent = d.readOnly || d.disabled;
+        }
+        else {
+            doPrevent = true;
+        }
+    }
+
+    if (doPrevent) {
+        event.preventDefault();
+    }
+});
+
 function welcomeGame() {
+
+	initialiseDictionary();
 	
 	if (gameover === true) {
 		resetGame();
@@ -117,6 +137,19 @@ function toggleAllSounds() {
 
 }
 
+function stopAllSounds() {
+
+	$.each($('audio'), function () {
+		    this.pause();
+		});
+}
+
+function playBGSound() {
+
+	bgSound.play();
+
+}
+
 function initGame() {
 
 	welcome.active = false;
@@ -132,12 +165,10 @@ function initGame() {
 		}
 	}, false);
 
-	bgSound.currentTime = 0;
+	//bgSound.currentTime = 0;
 	bgSound.play();
 	muted = false;
 
-	initialiseDictionary();
-	
 	setDefaultAchievements()
 
 	setStartTime();
@@ -303,7 +334,7 @@ function checkHealth(theEnemy) {
 			player.lives++;
 			
 			if (!muted) {		
-				powerupSound.currentTime = 0;
+				//powerupSound.currentTime = 0;
 	            powerupSound.play();
         	}
 
@@ -313,7 +344,7 @@ function checkHealth(theEnemy) {
 			updatePlayerScore(theEnemy.score);
 			
 			if (!muted) {
-				explosionSound.currentTime = 0;
+				//explosionSound.currentTime = 0;
 	            explosionSound.play();
         	}
 			
@@ -345,7 +376,7 @@ function damageEnemy() {
 	checkHealth(currentenemy);
 
 	if (!muted) {
-		laserSound.currentTime = 0;
+		//laserSound.currentTime = 0;
         laserSound.play();
    	}
 
@@ -483,9 +514,10 @@ function gameOver() {
 
 function pauseGame() {
 
-	toggleAllSounds();
-
+	//toggleAllSounds();
 	if (timer != null) {
+
+		stopAllSounds();
 
 		clearInterval(timer);
 		timer = null;
@@ -503,6 +535,12 @@ function pauseGame() {
 
 	} else if (!gameover) {
 	
+		if (!muted) {
+
+			playBGSound();
+
+		}
+		
 		pause.active = false;
 
 		pauseScreen.active = false;

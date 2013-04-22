@@ -2,7 +2,7 @@
 <meta charset="UTF-8">
 <html>
 <head>
-    <title>Merge | IWP (clg11)</title>
+    <title>Home | WordWarz (clg11 - IWP)</title>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Oswald:400,300' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,200,100' rel='stylesheet' type='text/css'>
@@ -15,8 +15,7 @@
 
  <div id="site_header">
            <h1>WordWarz</h1>
-           <h2 class="smalltext">Like robot wars, but with less Craig Charles.</h2>
-           <h2><a href="#">Home</a> | <a href="#">About</a></h2>
+           <h2><a href="index.html">Home</a> | <a href="about.html">About</a></h2>
 </div>
 
     <div id="site_container">
@@ -28,7 +27,7 @@
         <div id="stats_container">
 
             <div id="score">
-                <h1>Your best score: 246</h1>
+                <h1>No best score set.</h1>
             </div>
 
             <div id="wpm">
@@ -39,12 +38,7 @@
 
                 <h1>Your Acheivements</h1>
                 <ul>
-                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
-                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
-                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
-                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
-                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
-                    <li><h1>Played for more than 10 seconds. - <span class="red"> Complete</span><h1></li>
+                    <li><h1>No acheivements unlocked.<h1></li>
                 </ul>
 
             </div>
@@ -53,14 +47,20 @@
 
                 <h1>Latest Words:</h1>
                 <ul>
-                    <li><h1>add - <span class="red"> Complete</span><h1></li>
-                    <li><h1>retrospect - <span class="red"> Complete</span><h1></li>
+                    <li><h1>No words defeated.<h1></li>
                 </ul>
             </div>
         </div>
-
-
     </div> 
+
+    <div id="site_footer">
+
+            <h1>&copy; Copyright: Connor Goddard 2012-2013. All Rights Reserved.</h1>
+            <h2>Please be aware that this is a university prototype, and no responsibility can be taken for any damage/losses caused from directly or in-directly using this software.</h2>
+
+    </div>
+
+
 
     <audio id="powerupSound">
         <source src="sounds/powerup.wav" type="audio/x-wav" />
@@ -78,12 +78,13 @@
     </audio>
     
     <audio id="bgSound">
-        <!-- <source src="sounds/bg.mp3" type="audio/mpeg" />  -->
         <source src="sounds/bg.ogg" type="audio/ogg" />
+        <source src="sounds/bg.mp3" type="audio/mpeg" />
         Your browser does not support the audio tag.
     </audio>
     
     <script type = 'text/javascript' src = 'js/highscore.js'></script>
+    <script type = 'text/javascript' src = 'js/sprite.js'></script>
     <script type = 'text/javascript' src = 'js/motion.js'></script>
     <script type = 'text/javascript' src = 'js/dict.js'></script>
     <script type = 'text/javascript' src = 'js/game.js'></script>   
