@@ -111,7 +111,11 @@ function drawGame() {
 		bullet.draw();
 	});
 	
-	//Draw the game control buttons ta the top of the canvas. 
+	//Draw the game control buttons at the top of the canvas. 
+	
+	context.fillStyle = "#323232";
+	context.fillRect(0, 0, 800, 40);
+	
 	pause.draw(false);
 	helpButton.draw();
 	muteButton.draw();
@@ -173,17 +177,17 @@ function loadEnemyImages(newEnemyType) {
 	if (newEnemyType === enemytype.ENEMY) {
 	
 		//If the browser is Mozilla Firefox or Internet Explorer
-		if ($.browser.mozilla || $.browser.msie) {
+	//	if ($.browser.mozilla || $.browser.msie) {
 	
 			//Use the ".png" image
-			ship_img.src = "images/ship.png";
+			ship_img.src = "images/ship2.png";
 		
-		} else {
+	//	} else {
 			
 			//Otherise use the higher quality ".svg" image. 
-			ship_img.src = "images/ship.svg";
+		//	ship_img.src = "images/ship.svg";
 		
-		}
+		//}
 	
 	//Otherwise if the new enemy is a health ship	
 	} else {
@@ -213,9 +217,6 @@ function clearCanvas() {
 
 	context.fillStyle=grd;
 	context.fillRect(0, 0, 800, 600);
-
-	context.fillStyle = "#323232";
-	context.fillRect(0, 0, 800, 40);
 
 }
 
@@ -320,7 +321,7 @@ function generateNewEnemies(wordArray, speed) {
 		var newEnemy = new Enemy();
 		
 		//Randomly introduce some "health ships"
-		if (Math.random() < 0.07) {
+		if (Math.random() < healthSpawnProb) {
 			
 			newEnemy.type = enemytype.HEALTH;
 			

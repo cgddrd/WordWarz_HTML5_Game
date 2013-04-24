@@ -426,6 +426,7 @@ function WelcomeScreen(I) {
 		
 		context.fillStyle = '#eee';	
 		context.font = '300 26pt Oswald';
+		
 		context.fillText("WordWarz", (I.x + (85)), (I.y + 60));
 
 		context.fillStyle = '#eee';	

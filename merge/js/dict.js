@@ -178,7 +178,7 @@ function getRandomWords(noOfWords, levelDifficulty) {
 					
 					charcode = selectedWord.word.charCodeAt(0);
 					
-			}
+				}
 			
 			word_array[i] = selectedWord;
 	

@@ -5,7 +5,7 @@
  * @author Connor Luke Goddard (clg11)
  */
 
-//Collections of differennt achievement types. 
+//Collections of different achievement types. 
 var word_achievements = [];
 var score_achievements = [];
 var time_achievements = [];

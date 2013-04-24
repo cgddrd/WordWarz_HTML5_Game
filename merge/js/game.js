@@ -12,9 +12,12 @@ var lockedEnemy = null;
 var lockedEnemyIndex = 0;
 var timer;
 var currentLevel = 1;
+
 var enemySpeed = 1;
 var enemySpawnTime = 1000;
-var enemySpawnDelay = 0.025;
+var enemySpawnDelay = 0.02;
+var healthSpawnProb = 0.07;
+
 var wordLimit = 5;
 var inputChars = 0;
 var wpmTime = 0;
@@ -244,7 +247,7 @@ function initGame() {
 		    bgSound.loop = true;
 		} else {
 		    bgSound.addEventListener('ended', function() {
-		        this.currentTime = 0;
+		        this.currentTime = 1;
 		        this.play();
 		    }, false);
 		}
@@ -255,7 +258,7 @@ function initGame() {
 	disableMute();
 	
 	//Begin playing background music.
-	bgSound.currentTime = 0;
+	bgSound.currentTime = 1;
 	playBGSound();
 
 	//Set the in-game acheivements.
@@ -274,24 +277,36 @@ function initGame() {
  * through levels. 
  */
 function setLevelDifficulty() {
+
+	var isChanged = false;
 	
 	if (currentLevel % 5 == 0 && enemySpeed < 3) {
 			
 		enemySpeed++;
+		isChanged = true;
 		
 	} 
 		
-	if (currentLevel % 3 == 0 && enemySpawnDelay < 0.04) {
+	if (currentLevel % 3 == 0 && enemySpawnDelay < 0.05 && !(isChanged)) {
 			
 		enemySpawnDelay+=0.005;
+		isChanged = true;
 			
 	} 
 		
-	if (currentLevel % 4 == 0 && enemySpawnTime > 400) {
+	if (currentLevel % 2 == 0 && enemySpawnTime > 400 && !(isChanged)) {
 			
 		enemySpawnTime-=50;
+		isChanged = true;
 			
 	} 
+	
+	if (currentLevel % 4 == 0 && healthSpawnProb > 0.03 && !(isChanged)) {
+		
+		healthSpawnProb-=0.01;
+		isChanged = true;
+		
+	}
 
 }
 
@@ -301,11 +316,11 @@ function setLevelDifficulty() {
  */
 function setLevelWordLength() {
 
-	if (currentLevel < 8) {
+	if (currentLevel < 6) {
 			
 			generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.EASY), enemySpeed);
 			
-	} else if (currentLevel >=8 && currentLevel <=12) {
+	} else if ((currentLevel >=6) && (currentLevel <=12)) {
 			
 			generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.MEDIUM), enemySpeed);
 			
@@ -313,7 +328,7 @@ function setLevelWordLength() {
 		
 		generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.HARD), enemySpeed);
 		
-	}
+	} 
 		
 }
 
@@ -408,7 +423,7 @@ function checkLevels() {
 		currentLevel++;
 		
 		//Stop the game loop. 
-		//clearInterval(timer);
+		clearInterval(timer);
 		
 		levelOver = false;
 		
@@ -422,6 +437,7 @@ function checkLevels() {
 	}
 	
 }
+
 
 /**
  * Updates the current score of the player.
@@ -683,6 +699,7 @@ function processGameOver() {
 
 	//Store any new acheivements/best scores in HTML5 local storage. 
 	storeAchievements();
+	loadAchievements();
 	
 	gameOver = true;
 
@@ -703,6 +720,7 @@ function processGameOver() {
 	gameOverScreen.draw();	
 	
 }
+
 
 /**
  * Pauses the current game state where it is currently at.  
