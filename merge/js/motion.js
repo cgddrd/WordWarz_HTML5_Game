@@ -314,6 +314,23 @@ function collides(a, b) {
 }
 
 /**
+ * Box-based collision detection algorithm used to determine
+ * where an enemy has collided with the player or noT. 
+ *
+ * @param a The first sprite object being checked.
+ * @param a The second sprite object being checked.
+ * @return Boolean determining if the two obhects in question have collided or not. 
+ */
+function collidesPlayer(a, b) {
+	  return !(
+        ((a.y + a.height) < (b.midpoint().y)) ||
+        (a.y > (b.midpoint().y + Math.floor((b.height/2)))) ||
+        ((a.x + a.width) < (b.midpoint().x)) ||
+        (a.x > (b.midpoint().x + (Math.floor(b.width/2))))
+    );
+}
+
+/**
  * Generates a collection of new enemies for the current level using 
  * data collected from the internal word collection. 
  *

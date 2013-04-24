@@ -366,6 +366,6 @@ function updateWPMDisplay(newWPM) {
 
 	$("#wpm").html("");
 	
-	$('#wpm').append("<h1>Current WPM: " + newWPM + "</h1>");
+	$('#wpm').append('<h1>Typing Speed: ' + newWPM + ' <span class="red small">wpm</span></h1>');
 		
 }

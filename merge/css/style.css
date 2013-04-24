@@ -222,6 +222,11 @@ html, body {
  	color: #eee;
  }
 
+ .small {
+
+ 	font-size: 20px;
+ }
+
 .credittable {
 	text-align: center;	
 	font: 100 12px/1.6 'Open Sans', Verdana, Helvetica, sans-serif;

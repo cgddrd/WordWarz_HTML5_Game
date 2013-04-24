@@ -5,7 +5,7 @@
  * @author Connor Luke Goddard (clg11)
  */
  
-var FPS = 20;
+var FPS = 30;
 var levelOver = false;
 var gameOver = false;
 var lockedEnemy = null;
@@ -280,14 +280,14 @@ function setLevelDifficulty() {
 
 	var isChanged = false;
 	
-	if (currentLevel % 5 == 0 && enemySpeed < 3 && !(isChanged)) {
+	if (currentLevel % 7 == 0 && enemySpeed < 3 && !(isChanged)) {
 			
 		enemySpeed++;
 		isChanged = true;
 		
 	} 
 		
-	if (currentLevel % 4 == 0 && enemySpawnDelay < 0.05 && !(isChanged)) {
+	if (currentLevel % 5 == 0 && enemySpawnDelay < 0.05 && !(isChanged)) {
 			
 		enemySpawnDelay+=0.005;
 		isChanged = true;
@@ -301,7 +301,7 @@ function setLevelDifficulty() {
 			
 	} 
 	
-	if (currentLevel % 4 == 0 && healthSpawnProb > 0.03 && !(isChanged)) {
+	if (currentLevel % 3 == 0 && healthSpawnProb > 0.03 && !(isChanged)) {
 		
 		healthSpawnProb-=0.01;
 		isChanged = true;
@@ -316,13 +316,13 @@ function setLevelDifficulty() {
  */
 function setLevelWordLength() {
 
-	if (currentLevel < 6) {
+	if (currentLevel < 4) {
 			
 		//generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.EASY), enemySpeed);
 
 		generateNewEnemies(getWords(levelDifficultyEnum.EASY, wordLimit), enemySpeed);
 			
-	} else if ((currentLevel >=6) && (currentLevel < 15)) {
+	} else if ((currentLevel >=4) && (currentLevel <=10)) {
 			
 		//generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.MEDIUM), enemySpeed);
 		generateNewEnemies(getWords(levelDifficultyEnum.MEDIUM, wordLimit), enemySpeed);
@@ -636,7 +636,7 @@ function handleCollisions() {
 	//Handle enemy/player collisions
 	enemies.forEach(function(enemy) {
 	
-		if (collides(enemy, player)) {
+		if (collidesPlayer(enemy, player)) {
 		
 			//Clear the enemy
 			enemy.active = false;

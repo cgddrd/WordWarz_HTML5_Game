@@ -29,7 +29,6 @@ function initialiseDictionary() {
 		 * (Does not require the downloading of data files from the web server)
 		 */
 		gameDictionary = JSON.parse(localStorage.getItem("dictionary"));
-		console.log('storage');
 	
 	//Otherwise, retrieve the various data files from the web server and process them.	
 	} else {
@@ -39,11 +38,7 @@ function initialiseDictionary() {
 			getDictFile("files/dict" + i + ".dat", i);
 			
 		}
-
-		console.log('file');
 	}
-	
-	console.log(gameDictionary);
 }
 
 /**
