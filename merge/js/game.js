@@ -5,7 +5,7 @@
  * @author Connor Luke Goddard (clg11)
  */
  
-var FPS = 30;
+var FPS = 20;
 var levelOver = false;
 var gameOver = false;
 var lockedEnemy = null;
@@ -14,8 +14,8 @@ var timer;
 var currentLevel = 1;
 
 var enemySpeed = 1;
-var enemySpawnTime = 1000;
-var enemySpawnDelay = 0.02;
+var enemySpawnTime = 800;
+var enemySpawnDelay = 0.03;
 var healthSpawnProb = 0.07;
 
 var wordLimit = 5;
@@ -280,14 +280,14 @@ function setLevelDifficulty() {
 
 	var isChanged = false;
 	
-	if (currentLevel % 5 == 0 && enemySpeed < 3) {
+	if (currentLevel % 5 == 0 && enemySpeed < 3 && !(isChanged)) {
 			
 		enemySpeed++;
 		isChanged = true;
 		
 	} 
 		
-	if (currentLevel % 3 == 0 && enemySpawnDelay < 0.05 && !(isChanged)) {
+	if (currentLevel % 4 == 0 && enemySpawnDelay < 0.05 && !(isChanged)) {
 			
 		enemySpawnDelay+=0.005;
 		isChanged = true;
@@ -318,18 +318,35 @@ function setLevelWordLength() {
 
 	if (currentLevel < 6) {
 			
-			generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.EASY), enemySpeed);
+		//generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.EASY), enemySpeed);
+
+		generateNewEnemies(getWords(levelDifficultyEnum.EASY, wordLimit), enemySpeed);
 			
-	} else if ((currentLevel >=6) && (currentLevel <=12)) {
+	} else if ((currentLevel >=6) && (currentLevel < 15)) {
 			
-			generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.MEDIUM), enemySpeed);
+		//generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.MEDIUM), enemySpeed);
+		generateNewEnemies(getWords(levelDifficultyEnum.MEDIUM, wordLimit), enemySpeed);
 			
 	} else {
 		
-		generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.HARD), enemySpeed);
+		//generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.HARD), enemySpeed);
+		generateNewEnemies(getWords(levelDifficultyEnum.HARD, wordLimit), enemySpeed);
 		
 	} 
 		
+}
+
+function getWords(levelDifficulty, wordLength) {
+
+	var wordCollection = getRandomWords(wordLength, levelDifficulty);
+
+	while (wordCollection.length < wordLength) {
+
+		wordCollection = getRandomWords(wordLength, levelDifficulty);
+
+	}
+
+	return wordCollection;
 }
 
 /**
@@ -342,7 +359,8 @@ function startLevel() {
 		
 		initLevel(enemySpawnTime, enemySpawnDelay);
 
-		generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.EASY), enemySpeed);
+		//generateNewEnemies(getRandomWords(wordLimit, levelDifficultyEnum.EASY), enemySpeed);
+		generateNewEnemies(getWords(levelDifficultyEnum.EASY, wordLimit), enemySpeed);
 		
 		
 	} else {
@@ -350,18 +368,9 @@ function startLevel() {
 	/* Otherwise, check to see what the current level is and 
 	 * decide how many words should be included in the level.
 	 */
-	if (wordLimit < 26) {
-
-		if (currentLevel < 10) {
+	if (wordLimit < 25) {
 			
-			wordLimit++;
-			
-		} else {
-			
-			wordLimit+=2;
-			
-		}
-
+		wordLimit++;
 	}
 		
 		setLevelDifficulty();
@@ -378,7 +387,7 @@ function startLevel() {
 		//Update the game statistics and data. 
 		updateGame();
 	
-		//If all the enemies have been destoryed, end the level.
+		//If all the enemies have been destroyed, end the level.
 		if (!checkEnemyCount()) {
 			
 			clearInterval(timer);
@@ -391,7 +400,7 @@ function startLevel() {
 			drawGame();
 			
 			//Update the game statistics. 
-			updateGameStats(currentLevel, getPlayer().score, getPlayer().lives);
+			updateGameStats(currentLevel, player.score, player.lives);
 			
 		}
 		
@@ -556,43 +565,46 @@ function damageEnemy() {
  * @param keyCode The ASCII code of the inputted character. 
  */
 function checkUserInput(keyCode) {
-	
-	var inputLetter = String.fromCharCode(keyCode);
-	
-	//If no enemy is current "locked in"
-	if (lockedEnemy === null) {
-	
-		//Attempt to locate a new enemy to "lock onto".
-		enemies.forEach(function(enemy) {
-		
-			var enemyName = enemy.name.toUpperCase();
-		
-			if (enemyName.charCodeAt(0) === keyCode && enemy.active === true) {
-				
-				/* If an enemy currenly in the game has a word with the 
-				 * first character matching the entered character, lock onto them.
-				 */
-				setLockedEnemy(enemy);
-				lockedEnemy.textColor = '#FE8E34';
 
+	if (!pause.active) {
+		
+		var inputLetter = String.fromCharCode(keyCode);
+		
+		//If no enemy is current "locked in"
+		if (lockedEnemy === null) {
+		
+			//Attempt to locate a new enemy to "lock onto".
+			enemies.forEach(function(enemy) {
+			
+				var enemyName = enemy.name.toUpperCase();
+			
+				if (enemyName.charCodeAt(0) === keyCode && enemy.active === true) {
+					
+					/* If an enemy currenly in the game has a word with the 
+					 * first character matching the entered character, lock onto them.
+					 */
+					setLockedEnemy(enemy);
+					lockedEnemy.textColor = '#FE8E34';
+
+					damageEnemy();
+					
+				} 
+			});
+		
+		//Otherwise if there is an enemy already locked onto..
+		} else {
+			
+			//Check to see if the user has spelt the next character correctly, and if so fire a bullet.
+			var enemyName = lockedEnemy.name.toUpperCase();
+			var letterCode = enemyName.charCodeAt(lockedEnemyIndex);
+			
+			if (enemyName.charCodeAt(lockedEnemyIndex) === keyCode) {
+			
 				damageEnemy();
-				
-			} 
-		});
-	
-	//Otherwise if there is an enemy already locked onto..
-	} else {
-		
-		//Check to see if the user has spelt the next character correctly, and if so fire a bullet.
-		var enemyName = lockedEnemy.name.toUpperCase();
-		var letterCode = enemyName.charCodeAt(lockedEnemyIndex);
-		
-		if (enemyName.charCodeAt(lockedEnemyIndex) === keyCode) {
-		
-			damageEnemy();
 
-		}		
-	}	
+			}		
+		}	
+	}
 }
 
 /**
@@ -696,7 +708,8 @@ function processGameOver() {
 	//Stop the game loop.
 	clearInterval(timer);
 
-
+	checkDeathAchievements();
+	
 	//Store any new acheivements/best scores in HTML5 local storage. 
 	storeAchievements();
 	loadAchievements();

@@ -36,6 +36,14 @@ var player = {
 		context.drawImage(player_img, this.x, this.y, this.width, this.height);
 
 	
+	},
+
+	//Return the position coordinate at the middle of the player sprite. 
+	midpoint: function() {
+		return {
+			x: Math.floor(this.x + this.width / 2),
+			y: Math.floor(this.y + this.height / 2)
+		};
 	}
 };
 
@@ -313,7 +321,7 @@ function collides(a, b) {
  * @param speed The desired movement speed of the new enemies. 
  */
 function generateNewEnemies(wordArray, speed) {
-	
+
 	//Loop through all the selected  words for the new level
 	for (var i = 0; i < wordArray.length; i++) {
 	
@@ -513,14 +521,6 @@ function updatePlayer() {
 			letterIndex: newLetterIndex,
 			target: enemies[enemyIndex]
 		}));
-	};
-
-	//Return the position coordinate at the middle of the player sprite. 
-	player.midpoint = function() {
-		return {
-			x: this.x + this.width / 2,
-			y: this.y + this.height / 2
-		};
 	};
 }
 
