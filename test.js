@@ -1,5 +1,0 @@
-function testFunc() {
-
-alert("hello");
-
-}
