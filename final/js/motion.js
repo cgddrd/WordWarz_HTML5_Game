@@ -188,7 +188,7 @@ function loadEnemyImages(newEnemyType) {
 	//	if ($.browser.mozilla || $.browser.msie) {
 	
 			//Use the ".png" image
-			ship_img.src = "images/ship2.png";
+			ship_img.src = "images/ship.png";
 		
 	//	} else {
 			
@@ -633,7 +633,7 @@ function checkMouse(mouse_event) {
 	if (pauseScreen.buttonInBounds(mousex, mousey) && pauseScreen.active) {
 		
 		pauseGame();
-		
+	
 	}
 }
 

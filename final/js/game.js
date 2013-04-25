@@ -152,7 +152,6 @@ function welcomeGame() {
 
 	//Add action listener to allow canvas to accept mouse clicks. 
 	canvas.addEventListener("click",checkMouse,false);
-	canvas.addEventListener("touchdown", checkMouse, false);
 	
 	welcome.active = true;
 	welcome.draw();	
