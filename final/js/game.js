@@ -92,7 +92,7 @@ $(document).unbind('keydown').bind('keydown', function (event) {
 });
 
 /**
- * Determines the keybaord input from the user and calls the appropiate actions. 
+ * Determines the keyboard input from the user and calls the appropiate actions. 
  */
 window.document.onkeydown = function(event) {
 
@@ -152,6 +152,7 @@ function welcomeGame() {
 
 	//Add action listener to allow canvas to accept mouse clicks. 
 	canvas.addEventListener("click",checkMouse,false);
+	canvas.addEventListener("touchdown", checkMouse, false);
 	
 	welcome.active = true;
 	welcome.draw();	

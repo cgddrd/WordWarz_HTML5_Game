@@ -585,6 +585,7 @@ function createHelpScreen() {
  * @param mouse_event The X/Y coordinates of the latest mouse click event.   
  */
 function checkMouse(mouse_event) {
+
 	
 	var bounding_box = canvas.getBoundingClientRect();
 	
