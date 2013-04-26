@@ -246,7 +246,10 @@ function initGame() {
 		    bgSound.loop = true;
 		} else {
 		    bgSound.addEventListener('ended', function() {
-		        this.currentTime = 1;
+		    	try {
+		    		this.currentTime = 1.00;
+		    	} catch (e) {	
+		    	}
 		        this.play();
 		    }, false);
 		}
