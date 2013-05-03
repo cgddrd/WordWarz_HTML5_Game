@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Home | WordWarz (clg11 - IWP)</title>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400italic,600italic,400,600' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Oswald:400,300' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Raleway:400,300,200,100' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="lib/jquery-migrate-1.1.1.min.js"></script>
+</head>
+
+<body onload="welcomeGame()">
+
+ <div id="site_header">
+           <h1>WordWarz</h1>
+           <h2><a href="index.html">Home</a> | <a href="about.html">About</a></h2>
+</div>
+
+    <div id="site_container">
+
+        <div id="canvas_container">
+            <canvas id="main_canvas" width="700" height="550">Unfortunatly, your browser cannot render this game. Sorry.</canvas> 
+        </div>
+
+        <div id="stats_container">
+
+            <div id="score">
+                <h1>No best score set.</h1>
+            </div>
+
+            <div id="wpm">
+                <h1>Typing Speed: 0 <span class="red small">wpm</span></h1>
+            </div>
+
+            <div id="achieve">
+
+                <h1>Your Acheivements</h1>
+                <ul>
+                    <li><h1>No acheivements unlocked.</h1></li>
+                </ul>
+
+            </div>
+
+            <div id="words">
+
+                <h1>Latest Defeated Words:</h1>
+                <ul>
+                    <li><h1>No words defeated.</h1></li>
+                </ul>
+            </div>
+        </div>
+    </div> 
+
+    <div id="site_footer">
+
+            <h1>&copy; Copyright: Connor Goddard 2012-2013. All Rights Reserved.</h1>
+            <h2>Please be aware that this is a university prototype, and no responsibility can be taken for any damage/losses caused from directly or in-directly using this software.</h2>
+
+    </div>
+
+
+
+    <audio id="powerupSound">
+        <source src="sounds/powerup.wav" type="audio/x-wav" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+     <audio id="laserSound">
+        <source src="sounds/laser.wav" type="audio/x-wav" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+    <audio id="explosionSound">
+        <source src="sounds/explosion.wav" type="audio/x-wav" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+    <audio id="bgSound">
+        <source src="sounds/bg.ogg" type="audio/ogg" />
+        <source src="sounds/bg.mp3" type="audio/mpeg" />
+        Your browser does not support the audio tag.
+    </audio>
+    
+    <script type = 'text/javascript' src = 'js/stats.js'></script>
+    <script type = 'text/javascript' src = 'js/sprite.js'></script>
+    <script type = 'text/javascript' src = 'js/motion.js'></script>
+    <script type = 'text/javascript' src = 'js/dict.js'></script>
+    <script type = 'text/javascript' src = 'js/game.js'></script>   
+</body>
+</html>
